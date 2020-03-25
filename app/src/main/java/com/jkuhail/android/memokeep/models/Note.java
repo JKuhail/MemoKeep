@@ -3,8 +3,6 @@ package com.jkuhail.android.memokeep.models;
 import com.orm.SugarRecord;
 import com.orm.dsl.Table;
 
-import java.util.Date;
-
 @Table
 public class Note extends SugarRecord {
     private long id;
@@ -12,7 +10,7 @@ public class Note extends SugarRecord {
     boolean importance;
     int color;
     //defining a relationship
-    Category category;
+    Notebook notebook;
 
     public Note() {
     }

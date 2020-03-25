@@ -3,13 +3,15 @@
     package="com.jkuhail.android.memokeep">
 
     <application
-        android:allowBackup="true"
         android:name="com.orm.SugarApp"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Archive"></activity>
+        <activity android:name=".CreateNote" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -20,6 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="DATABASE"
             android:value="memo_keep.db" />

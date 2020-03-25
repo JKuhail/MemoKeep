@@ -4,14 +4,14 @@ import com.orm.SugarRecord;
 import com.orm.dsl.Table;
 
 @Table
-public class Category extends SugarRecord {
+public class Notebook extends SugarRecord {
     private long id;
     String name;
 
-    public Category() {
+    public Notebook() {
     }
 
-    public Category(String name) {
+    public Notebook(String name) {
         this.name = name;
     }
 
