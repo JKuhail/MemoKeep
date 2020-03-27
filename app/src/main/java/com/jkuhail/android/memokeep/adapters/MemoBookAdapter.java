@@ -12,15 +12,15 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jkuhail.android.memokeep.R;
-import com.jkuhail.android.memokeep.models.Notebook;
+import com.jkuhail.android.memokeep.models.MemoBook;
 
 import java.util.List;
 
-public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.NotebookHolder> {
-    private List<Notebook> data;
+public class MemoBookAdapter extends RecyclerView.Adapter<MemoBookAdapter.NotebookHolder> {
+    private List<MemoBook> data;
     private Context context;
 
-    public NotebookAdapter(List<Notebook> data, Context context) {
+    public MemoBookAdapter(List<MemoBook> data, Context context) {
         this.data = data;
         this.context = context;
     }
@@ -29,20 +29,20 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Notebo
     @NonNull
     @Override
     public NotebookHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.notebook_item , parent , false);
+        View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.memo_book_item, parent , false);
         return new NotebookHolder(root);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NotebookHolder holder, int position) {
-        final Notebook notebook = data.get(position);
-        holder.notebook_name.setText(notebook.getName());
-        holder.notebook_date.setText(notebook.getDate());
+        final MemoBook memoBook = data.get(position);
+        holder.notebook_name.setText(memoBook.getName());
+        holder.notebook_date.setText(memoBook.getDate());
         holder.notebook_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO: change this!
-                Toast.makeText(context, "item clicked! the Id is: " + notebook.getId().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "item clicked! the Id is: " + memoBook.getId().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 

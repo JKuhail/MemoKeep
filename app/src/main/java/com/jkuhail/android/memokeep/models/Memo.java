@@ -4,18 +4,18 @@ import com.orm.SugarRecord;
 import com.orm.dsl.Table;
 
 @Table
-public class Note extends SugarRecord {
+public class Memo extends SugarRecord {
     private long id;
     String title , description , date;
     boolean importance;
     int color;
     //defining a relationship
-    Notebook notebook;
+    MemoBook memoBook;
 
-    public Note() {
+    public Memo() {
     }
 
-    public Note(String title, String description, String date, boolean importance, int color) {
+    public Memo(String title, String description, String date, boolean importance, int color) {
         this.title = title;
         this.description = description;
         this.date = date;

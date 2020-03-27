@@ -5,18 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
-public class NotesFragment extends Fragment {
+public class MemosFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View root =  inflater.inflate(R.layout.fragment_notes, container, false);
+        View root =  inflater.inflate(R.layout.fragment_memos, container, false);
 
         return root;
     }

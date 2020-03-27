@@ -4,14 +4,14 @@ import com.orm.SugarRecord;
 import com.orm.dsl.Table;
 
 @Table
-public class Notebook extends SugarRecord {
+public class MemoBook extends SugarRecord {
     private long id;
     String name , date;
 
-    public Notebook() {
+    public MemoBook() {
     }
 
-    public Notebook(String name , String date) {
+    public MemoBook(String name , String date) {
         this.name = name;
         this.date = date;
     }

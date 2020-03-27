@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".NotebooksFragment"
+    tools:context=".MemoBooksFragment"
     android:background="@color/background_color">
     
     <LinearLayout
@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="All Notebooks"
+            android:text="All Memo books"
             android:textStyle="bold"
             android:textColor="@color/colorAccent"
             android:layout_weight="2"/>
@@ -28,20 +28,20 @@
             android:layout_width="0dp"
             android:layout_height="33dp"
             android:layout_gravity="center"
-            android:text="New Notebook"
+            android:text="New Memo book"
             android:textSize="14sp"
             android:textColor="@color/button_text_selector"
             android:background="@drawable/button_shape_white"
             android:textAllCaps="false"
             android:layout_weight="1"
-            style="?android:attr/borderlessButtonStyle"/>
+            style="?android:attr/borderlessButtonStyle" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/notebook_item"
+        tools:listitem="@layout/memo_book_item"
         android:clickable="true"
         android:focusable="true"
         android:divider="#00000000"/>

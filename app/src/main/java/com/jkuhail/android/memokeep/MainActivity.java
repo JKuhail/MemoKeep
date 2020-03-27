@@ -21,7 +21,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.jkuhail.android.memokeep.models.Notebook;
+import com.jkuhail.android.memokeep.models.MemoBook;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
@@ -44,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new NotesFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemosFragment()).commit();
         navigationView = findViewById(R.id.space);
         navigationView.initWithSaveInstanceState(savedInstanceState);
-        navigationView.addSpaceItem(new SpaceItem("Notes", R.drawable.ic_note));
-        navigationView.addSpaceItem(new SpaceItem("Notebooks", R.drawable.ic_notebook));
+        navigationView.addSpaceItem(new SpaceItem("Memos", R.drawable.ic_note));
+        navigationView.addSpaceItem(new SpaceItem("Memo books", R.drawable.ic_notebook));
 
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
@@ -60,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(int itemIndex, String itemName) {
                 switch (itemIndex){
                     case 0:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new NotesFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemosFragment()).commit();
                         break;
                     case 1:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new NotebooksFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemoBooksFragment()).commit();
                         break;
                 }
 
@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemReselected(int itemIndex, String itemName) {
                 switch (itemIndex){
                     case 0:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new NotesFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemosFragment()).commit();
                         break;
                     case 1:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new NotebooksFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemoBooksFragment()).commit();
                         break;
                 }
             }
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             new_note.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext() , CreateNote.class);
+                    Intent intent = new Intent(getApplicationContext() , CreateMemo.class);
                     startActivity(intent);
                     window.dismiss();
                 }
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             final TextView error_message;
 
             LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.new_notebook_popup, null);
+            View layout = inflater.inflate(R.layout.new_memo_book_popup, null);
 
             int width = LinearLayout.LayoutParams.MATCH_PARENT;
             int height = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -190,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         //TODO: handle the date
                         String date = getCurrentDate();
-                        Notebook notebook = new Notebook(notebook_name , date);
-                        notebook.save();
+                        MemoBook memoBook = new MemoBook(notebook_name , date);
+                        memoBook.save();
                         window.dismiss();
                     }
                 }
