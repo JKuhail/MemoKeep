@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,29 +13,30 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.textfield.TextInputLayout;
 import com.jkuhail.android.memokeep.models.Notebook;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
     SpaceNavigationView navigationView;
     private PopupWindow window;
+    public static final String DATE_FORMAT = "MMM dd, yyyy";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void ShowSecondPopupWindow(){
+    public void ShowSecondPopupWindow(){
         try {
             final Button ok;
             final EditText ed_new_notebook;
@@ -188,7 +188,9 @@ public class MainActivity extends AppCompatActivity {
                         error_message.setVisibility(View.VISIBLE);
                         ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
                     }else{
-                        Notebook notebook = new Notebook(notebook_name);
+                        //TODO: handle the date
+                        String date = getCurrentDate();
+                        Notebook notebook = new Notebook(notebook_name , date);
                         notebook.save();
                         window.dismiss();
                     }
@@ -206,5 +208,11 @@ public class MainActivity extends AppCompatActivity {
 
         }catch (Exception e){}
 
+    }
+    public static String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date today = Calendar.getInstance().getTime();
+        return dateFormat.format(today);
     }
 }

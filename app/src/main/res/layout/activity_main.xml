@@ -60,12 +60,13 @@
     </androidx.cardview.widget.CardView>
 
 
+
     <FrameLayout
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/space"
-        android:layout_below="@id/app_bar"/>
+        android:layout_below="@id/app_bar"
+        android:layout_marginBottom="48dp"/>
 
 
 
@@ -85,8 +86,8 @@
         app:space_item_icon_size="@dimen/space_item_icon_default_size"
         app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
         app:space_item_text_size="@dimen/space_item_text_default_size"
-        android:gravity="bottom"/>
-
+        android:gravity="bottom"
+        android:elevation="32dp"/>
 </RelativeLayout>
 
 

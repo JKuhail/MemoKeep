@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/notebook_main"
+    app:cardCornerRadius="5dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardBackgroundColor="@color/colorPrimary"
+    app:cardElevation="1dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_notebook2"
+            android:layout_marginStart="24dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_weight="4"
+            android:layout_marginStart="24dp">
+            <TextView
+                android:id="@+id/notebook_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notebook Name"
+                android:textStyle="bold"
+                android:textColor="@color/disabled_icon_color"
+                android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Created: "
+                    android:textSize="12sp"/>
+                <TextView
+                    android:id="@+id/notebook_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="date"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_weight="0"
+            android:background="@drawable/ic_forward"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>
