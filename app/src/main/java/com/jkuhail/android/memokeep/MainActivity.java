@@ -215,4 +215,12 @@ public class MainActivity extends AppCompatActivity {
         Date today = Calendar.getInstance().getTime();
         return dateFormat.format(today);
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
+    }
 }

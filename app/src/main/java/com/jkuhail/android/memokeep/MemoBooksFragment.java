@@ -40,6 +40,7 @@ public class MemoBooksFragment extends Fragment {
             public void onClick(View view) {
                 //this is how we call a class activity in a fragment ;)
                 ((MainActivity) getActivity()).ShowSecondPopupWindow();
+
             }
         });
 

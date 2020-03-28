@@ -1,11 +1,9 @@
 package com.jkuhail.android.memokeep.models;
 
 import com.orm.SugarRecord;
-import com.orm.dsl.Table;
 
-@Table
+
 public class MemoBook extends SugarRecord {
-    private long id;
     String name , date;
 
     public MemoBook() {
@@ -32,7 +30,6 @@ public class MemoBook extends SugarRecord {
         this.date = date;
     }
 
-    public Long getId() {
-        return id;
-    }
+
+
 }
