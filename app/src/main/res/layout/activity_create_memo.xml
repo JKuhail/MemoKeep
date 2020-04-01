@@ -3,21 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".CreateMemo"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardUseCompatPadding="false">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:layout_marginTop="3dp">
 
         <Button
             android:id="@+id/back_btn"
@@ -27,33 +21,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="12dp" />
-        <LinearLayout
-            android:id="@+id/memo_keep"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="8dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/back_btn"
-            android:padding="6dp">
 
-            <TextView
-                android:id="@+id/new_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gudea_bold"
-                android:text="New"
-                android:textColor="@color/disabled_icon_color"
-                android:textSize="23sp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/gudea"
-                android:text="Memo"
-                android:textColor="@color/disabled_icon_color"
-                android:textSize="35sp" />
-
-        </LinearLayout>
 
         <Button
             android:id="@+id/save_btn"
@@ -72,7 +40,7 @@
 
 
     </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -80,8 +48,8 @@
         android:orientation="horizontal"
         android:paddingStart="14dp"
         android:paddingEnd="14dp"
-        android:paddingTop="8dp"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center_vertical">
 
         <EditText
             android:id="@+id/memo_title"
@@ -96,17 +64,56 @@
             android:background="@android:color/transparent"
             android:layout_weight="4"/>
 
-        <CheckBox
-            android:id="@+id/importance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+
+
 
     </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/memo_book_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_notebook"
+            android:text="Choose a Memo book"
+            android:textColor="@color/dark_grey"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true"
+            android:drawablePadding="6dp"/>
+
+        <ImageView
+            android:id="@+id/color_picker"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:src="@drawable/ic_dropper"
+            android:layout_toStartOf="@id/star"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="12dp"/>
+        <ImageView
+            android:id="@+id/star"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:src="@drawable/ic_star_dark"
+            android:layout_marginEnd="5dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#D1D1D1"
+        android:background="@color/grey"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:layout_marginStart="14dp"
@@ -122,6 +129,7 @@
         android:hint="Enter memo"
         android:inputType="textMultiLine"
         android:paddingStart="14dp"
-        android:paddingEnd="14dp" />
+        android:paddingEnd="14dp"
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Archive"></activity>
+        <activity android:name=".ChooseMemoBook"></activity>
+        <activity android:name=".Archive" />
         <activity android:name=".CreateMemo" />
         <activity
             android:name=".MainActivity"
@@ -28,7 +29,7 @@
             android:value="memo_keep_db.db" />
         <meta-data
             android:name="VERSION"
-            android:value="15" />
+            android:value="20" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />

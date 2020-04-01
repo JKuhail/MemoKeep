@@ -4,10 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MemoBooksFragment"
+    tools:context=".ChooseMemoBook"
     android:background="@color/background_color">
 
-    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="3dp">
+
+        <Button
+            android:id="@+id/back_to_memo_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_back"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12dp" />
+
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +40,7 @@
             android:textColor="@color/colorAccent"
             android:layout_weight="2"/>
         <Button
-            android:id="@+id/new_notebook_fragment"
+            android:id="@+id/new_notebook_fragment2"
             android:layout_width="0dp"
             android:layout_height="33dp"
             android:layout_gravity="center"
@@ -39,7 +54,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/memo_book_item"

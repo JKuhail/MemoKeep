@@ -29,6 +29,7 @@ import com.luseen.spacenavigation.SpaceOnClickListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     SpaceNavigationView navigationView;
     private PopupWindow window;
     public static final String DATE_FORMAT = "MMM dd, yyyy";
+    List<MemoBook> memoBooks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         navigationView.initWithSaveInstanceState(savedInstanceState);
         navigationView.addSpaceItem(new SpaceItem("Memos", R.drawable.ic_note));
         navigationView.addSpaceItem(new SpaceItem("Memo books", R.drawable.ic_notebook));
+
+        memoBooks = MemoBook.listAll(MemoBook.class);
+
 
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
@@ -177,25 +182,27 @@ public class MainActivity extends AppCompatActivity {
             ed_new_notebook = layout.findViewById(R.id.ed_new_notebook);
             ok = layout.findViewById(R.id.ok);
             error_message = layout.findViewById(R.id.error_message);
-
             ok.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    String notebook_name = ed_new_notebook.getText().toString().trim();
+                    String memo_book_name = ed_new_notebook.getText().toString().trim();
 
-                    if(ed_new_notebook.length() == 0){
-                        error_message.setVisibility(View.VISIBLE);
-                        ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                    }else{
-                        //TODO: handle the date
-                        String date = getCurrentDate();
-                        MemoBook memoBook = new MemoBook(notebook_name , date);
-                        memoBook.save();
-                        window.dismiss();
-                    }
-                }
-
+                            if (ed_new_notebook.length() == 0) {
+                                error_message.setVisibility(View.VISIBLE);
+                                error_message.setText("Please enter a name!");
+                                ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
+                            } else if (isDuplicated(memo_book_name)) {
+                                error_message.setVisibility(View.VISIBLE);
+                                error_message.setText("This Memo book is already exists!");
+                                ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
+                            } else {
+                                String date = getCurrentDate();
+                                MemoBook memoBook = new MemoBook(memo_book_name, date);
+                                memoBook.save();
+                                window.dismiss();
+                            }
+                        }
             });
             layout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -222,5 +229,17 @@ public class MainActivity extends AppCompatActivity {
         a.addCategory(Intent.CATEGORY_HOME);
         a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(a);
+    }
+
+    public boolean isDuplicated(String word){
+        if(!memoBooks.isEmpty()){
+            for (MemoBook memoBook1 : memoBooks) {
+                String memoBookName = memoBook1.getName();
+                if(word.equals(memoBookName)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

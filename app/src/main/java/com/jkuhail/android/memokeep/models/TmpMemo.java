@@ -1,26 +1,25 @@
 package com.jkuhail.android.memokeep.models;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Table;
+
+import java.io.Serializable;
 
 
-public class Memo extends SugarRecord {
+public class TmpMemo extends SugarRecord implements Serializable {
 
-    String title , content , date , memoBookName;
+    String title , content ;
     boolean importance;
     int color;
 
-
-
-    public Memo() {
+    public TmpMemo() {
     }
 
-    public Memo(String title, String content, String date, boolean importance, int color , String memoBookName) {
+    public TmpMemo(String title, String content, boolean importance, int color) {
         this.title = title;
         this.content = content;
-        this.date = date;
         this.importance = importance;
         this.color = color;
-        this.memoBookName = memoBookName;
     }
 
 
@@ -40,13 +39,6 @@ public class Memo extends SugarRecord {
         this.content = content;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
     public boolean isImportance() {
         return importance;
@@ -62,13 +54,5 @@ public class Memo extends SugarRecord {
 
     public void setColor(int color) {
         this.color = color;
-    }
-
-    public String getMemoBookName() {
-        return memoBookName;
-    }
-
-    public void setMemoBookName(String memoBookName) {
-        this.memoBookName = memoBookName;
     }
 }

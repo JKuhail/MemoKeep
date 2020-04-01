@@ -87,7 +87,7 @@
         app:space_item_text_size="@dimen/space_item_text_default_size"
         android:gravity="bottom"
         android:elevation="32dp"
-        android:fontFamily="@font/gudea"/>
+        android:fontFamily="@font/gudea" />
 </RelativeLayout>
 
 

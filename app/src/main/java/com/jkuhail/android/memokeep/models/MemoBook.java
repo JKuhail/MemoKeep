@@ -1,9 +1,12 @@
 package com.jkuhail.android.memokeep.models;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Table;
+
+import java.io.Serializable;
 
 
-public class MemoBook extends SugarRecord {
+public class MemoBook extends SugarRecord implements Serializable {
     String name , date;
 
     public MemoBook() {
@@ -13,6 +16,7 @@ public class MemoBook extends SugarRecord {
         this.name = name;
         this.date = date;
     }
+
 
     public String getName() {
         return name;
