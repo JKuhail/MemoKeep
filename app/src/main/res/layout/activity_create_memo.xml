@@ -78,14 +78,16 @@
 
         <TextView
             android:id="@+id/memo_book_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_notebook"
             android:text="Choose a Memo book"
             android:textColor="@color/dark_grey"
             android:textStyle="bold"
             android:layout_alignParentStart="true"
-            android:drawablePadding="6dp"/>
+            android:layout_toStartOf="@id/color_picker"
+            android:drawablePadding="6dp"
+            android:layout_marginEnd="12dp"/>
 
         <ImageView
             android:id="@+id/color_picker"

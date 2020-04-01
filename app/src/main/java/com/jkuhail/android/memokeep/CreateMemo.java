@@ -87,6 +87,7 @@ public class CreateMemo extends AppCompatActivity  {
             public void onClick(View view) {
                 Intent intent = new Intent(CreateMemo.this , MainActivity.class);
                 startActivity(intent);
+                tmpMemo.delete();
             }
         });
 
@@ -98,7 +99,7 @@ public class CreateMemo extends AppCompatActivity  {
                 tmpContent = memo_content.getText().toString().trim();
                 tmpImportance = memoImportance;
                 tmpColor = memoColor;
-                TmpMemo tmpMemo = new TmpMemo(tmpTitle , tmpContent , tmpImportance , tmpColor);
+                tmpMemo = new TmpMemo(tmpTitle , tmpContent , tmpImportance , tmpColor);
                 tmpMemo.save();
 
                 Intent intent = new Intent(getApplicationContext() , ChooseMemoBook.class);
@@ -271,6 +272,7 @@ public class CreateMemo extends AppCompatActivity  {
 
     @Override
     public void onBackPressed() {
+        tmpMemo.delete();
         Intent intent = new Intent(getApplicationContext() , MainActivity.class);
         getApplicationContext().startActivity(intent);
     }
