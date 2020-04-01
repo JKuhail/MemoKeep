@@ -99,14 +99,11 @@ public class ChooseMemoBook extends AppCompatActivity {
                 public void onClick(View v) {
                     String notebook_name = ed_new_notebook.getText().toString().trim();
 
-
-                    for(int i = 0; i < memoBooks.size() ; i++) {
-                        String memoBookName = memoBooks.get(i).getName();
                         if (ed_new_notebook.length() == 0) {
                             error_message.setVisibility(View.VISIBLE);
                             error_message.setText("Please enter a name!");
                             ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                        }else if(memoBookName.equals(notebook_name)){
+                        }else if(isDuplicated(notebook_name)){
                             error_message.setVisibility(View.VISIBLE);
                             error_message.setText("This Memo book is already exists!");
                             ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
@@ -119,11 +116,9 @@ public class ChooseMemoBook extends AppCompatActivity {
                             intent.putExtra("MemoBookObject", memoBook);
                             getApplicationContext().startActivity(intent);
                             window.dismiss();
-                            break;
+
                         }
                     }
-                }
-
             });
             layout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -136,5 +131,18 @@ public class ChooseMemoBook extends AppCompatActivity {
 
         }catch (Exception e){}
 
+    }
+    public final boolean isDuplicated(String word){
+        List<MemoBook> memoBooks = MemoBook.listAll(MemoBook.class);
+        String memoBookName;
+        if(!memoBooks.isEmpty()){
+            for (MemoBook memoBook : memoBooks) {
+                memoBookName = memoBook.getName();
+                if(word.equals(memoBookName)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

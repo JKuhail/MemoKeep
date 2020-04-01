@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     SpaceNavigationView navigationView;
     private PopupWindow window;
     public static final String DATE_FORMAT = "MMM dd, yyyy";
-    List<MemoBook> memoBooks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView.addSpaceItem(new SpaceItem("Memos", R.drawable.ic_note));
         navigationView.addSpaceItem(new SpaceItem("Memo books", R.drawable.ic_notebook));
 
-        memoBooks = MemoBook.listAll(MemoBook.class);
+
 
 
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
@@ -231,10 +231,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(a);
     }
 
-    public boolean isDuplicated(String word){
+    public final boolean isDuplicated(String word){
+        List<MemoBook> memoBooks = MemoBook.listAll(MemoBook.class);
+        String memoBookName;
         if(!memoBooks.isEmpty()){
-            for (MemoBook memoBook1 : memoBooks) {
-                String memoBookName = memoBook1.getName();
+            for (MemoBook memoBook : memoBooks) {
+                memoBookName = memoBook.getName();
                 if(word.equals(memoBookName)){
                     return true;
                 }
