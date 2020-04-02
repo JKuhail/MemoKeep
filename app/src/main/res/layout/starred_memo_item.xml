@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/memo_main"
+    app:cardCornerRadius="10dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardBackgroundColor="@color/colorPrimary"
+    app:cardElevation="5dp"
+    android:layout_marginEnd="8dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp">
+
+    <LinearLayout
+        android:layout_width="170dp"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/t_memo_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Memo Title"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:maxLines="2"/>
+
+        <View
+            android:id="@+id/blank"
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"
+            android:background="@color/grey"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/t_memo_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Memo Title"
+            android:maxLines="7"/>
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

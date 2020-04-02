@@ -33,6 +33,7 @@ public class MemoBooksFragment extends Fragment {
         adapter = new MemoBookAdapter(data , getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
 
         new_notebook_fragment = root.findViewById(R.id.new_notebook_fragment);
         new_notebook_fragment.setOnClickListener(new View.OnClickListener() {

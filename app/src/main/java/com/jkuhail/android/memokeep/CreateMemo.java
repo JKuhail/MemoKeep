@@ -79,7 +79,7 @@ public class CreateMemo extends AppCompatActivity  {
 
         memoBook = (MemoBook) getIntent().getSerializableExtra("MemoBookObject");
         //(condition) ? expressionTrue :  expressionFalse;
-        memo_book_btn.setText(memoBook != null ? memoBook.getName() : "Choose a Memo book");
+        memo_book_btn.setText(memoBook != null ? memoBook.getName() : "Choose Memo book");
 
 
         back_btn.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +87,9 @@ public class CreateMemo extends AppCompatActivity  {
             public void onClick(View view) {
                 Intent intent = new Intent(CreateMemo.this , MainActivity.class);
                 startActivity(intent);
-                tmpMemo.delete();
+                if(!tmpMemos.isEmpty()) {
+                    tmpMemo.delete();
+                }
             }
         });
 
@@ -163,7 +165,7 @@ public class CreateMemo extends AppCompatActivity  {
 
     public void ShowThirdPopupWindow(){
         try {
-            final CardView color1 , color2 , color3 , color4 , color5 , color6;
+            final CardView color1 , color3 , color4 , color5 , color6;
             final Button btn_default;
 
             hideSoftKeyboard(CreateMemo.this);
@@ -182,7 +184,6 @@ public class CreateMemo extends AppCompatActivity  {
 
 
             color1 = layout.findViewById(R.id.memo_color_1);
-            color2 = layout.findViewById(R.id.memo_color_2);
             color3 = layout.findViewById(R.id.memo_color_3);
             color4 = layout.findViewById(R.id.memo_color_4);
             color5 = layout.findViewById(R.id.memo_color_5);
@@ -197,13 +198,7 @@ public class CreateMemo extends AppCompatActivity  {
                     window.dismiss();
                 }
             });
-            color2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    memoColor = 2;
-                    window.dismiss();
-                }
-            });
+
             color3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -272,7 +267,9 @@ public class CreateMemo extends AppCompatActivity  {
 
     @Override
     public void onBackPressed() {
-        tmpMemo.delete();
+        if(!tmpMemos.isEmpty()) {
+            tmpMemo.delete();
+        }
         Intent intent = new Intent(getApplicationContext() , MainActivity.class);
         getApplicationContext().startActivity(intent);
     }

@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
-                ShowFirstPopupWindow();
+                Intent intent = new Intent(getApplicationContext() , CreateMemo.class);
+                startActivity(intent);
             }
 
             @Override
@@ -108,57 +109,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void ShowFirstPopupWindow(){
-        try {
-            Button new_note, new_notebook;
-
-            LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.popup_window, null);
-
-            int width = LinearLayout.LayoutParams.MATCH_PARENT;
-            int height = LinearLayout.LayoutParams.MATCH_PARENT;
-
-            window = new PopupWindow(layout, width, height, true);
-
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            window.setOutsideTouchable(true);
-            window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-            //  window.showAtLocation(layout, 17, 100, 100);
-
-            new_note = layout.findViewById(R.id.new_note);
-            new_notebook = layout.findViewById(R.id.new_notebook);
-
-            new_note.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext() , CreateMemo.class);
-                    startActivity(intent);
-                    window.dismiss();
-                }
-
-            });
-            new_notebook.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    window.dismiss();
-                    ShowSecondPopupWindow();
-
-                }
-
-            });
-            layout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    //Close the window when clicked
-                    window.dismiss();
-                    return true;
-                }
-            });
-
-        }catch (Exception e){}
-
-    }
 
     public void ShowSecondPopupWindow(){
         try {
