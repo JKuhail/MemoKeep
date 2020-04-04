@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -76,6 +77,8 @@ public class CreateMemo extends AppCompatActivity  {
             memoImportance = false;
         }
 
+        memoImportance =  getIntent().getBooleanExtra("importance" , memoImportance);
+
 
         memoBook = (MemoBook) getIntent().getSerializableExtra("MemoBookObject");
         //(condition) ? expressionTrue :  expressionFalse;
@@ -133,6 +136,27 @@ public class CreateMemo extends AppCompatActivity  {
             }
         });
 
+        switch (memoColor){
+            case 1:
+                color_picker.getBackground().setColorFilter(Color.parseColor("#D32727"), PorterDuff.Mode.SRC_ATOP);
+                break;
+            case 3:
+                color_picker.getBackground().setColorFilter(Color.parseColor("#EF8E0B"), PorterDuff.Mode.SRC_ATOP);
+                break;
+            case 4:
+                color_picker.getBackground().setColorFilter(Color.parseColor("#03A8C4"), PorterDuff.Mode.SRC_ATOP);
+                break;
+            case 5:
+                color_picker.getBackground().setColorFilter(Color.parseColor("#516F55"), PorterDuff.Mode.SRC_ATOP);
+                break;
+            case 6:
+                color_picker.getBackground().setColorFilter(Color.parseColor("#842c72"), PorterDuff.Mode.SRC_ATOP);
+                break;
+            default:
+                color_picker.getBackground().setColorFilter(Color.parseColor("#737373"), PorterDuff.Mode.SRC_ATOP);
+                break;
+        }
+
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,7 +173,7 @@ public class CreateMemo extends AppCompatActivity  {
                         Memo memo = new Memo(memoTitle , memoContent , memoDate , memoImportance , memoColor , memoBook.getName());
                         memo.save();
                     }else{
-                        Memo memo = new Memo(memoTitle , memoContent , memoDate , memoImportance , memoColor , "null");
+                        Memo memo = new Memo(memoTitle , memoContent , memoDate , memoImportance , memoColor , "");
                         memo.save();
                     }
 
@@ -195,6 +219,7 @@ public class CreateMemo extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
                     memoColor = 1;
+                    color_picker.getBackground().setColorFilter(Color.parseColor("#D32727"), PorterDuff.Mode.SRC_ATOP);
                     window.dismiss();
                 }
             });
@@ -203,6 +228,7 @@ public class CreateMemo extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
                     memoColor = 3;
+                    color_picker.getBackground().setColorFilter(Color.parseColor("#EF8E0B"), PorterDuff.Mode.SRC_ATOP);
                     window.dismiss();
                 }
             });
@@ -210,6 +236,7 @@ public class CreateMemo extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
                     memoColor = 4;
+                    color_picker.getBackground().setColorFilter(Color.parseColor("#03A8C4"), PorterDuff.Mode.SRC_ATOP);
                     window.dismiss();
                 }
             });
@@ -217,6 +244,7 @@ public class CreateMemo extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
                     memoColor = 5;
+                    color_picker.getBackground().setColorFilter(Color.parseColor("#516F55"), PorterDuff.Mode.SRC_ATOP);
                     window.dismiss();
                 }
             });
@@ -224,6 +252,7 @@ public class CreateMemo extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
                     memoColor = 6;
+                    color_picker.getBackground().setColorFilter(Color.parseColor("#842c72"), PorterDuff.Mode.SRC_ATOP);
                     window.dismiss();
                 }
             });
@@ -233,6 +262,7 @@ public class CreateMemo extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
                     memoColor = 0;
+                    color_picker.getBackground().setColorFilter(Color.parseColor("#737373"), PorterDuff.Mode.SRC_ATOP);
                     window.dismiss();
                 }
             });
