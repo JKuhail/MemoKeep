@@ -20,7 +20,10 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.jkuhail.android.memokeep.adapters.ChooseMemoBookAdapter;
+import com.jkuhail.android.memokeep.models.Memo;
 import com.jkuhail.android.memokeep.models.MemoBook;
+import com.orm.query.Select;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +47,7 @@ public class ChooseMemoBook extends AppCompatActivity {
         back_to_memo_btn = findViewById(R.id.back_to_memo_btn);
         recyclerView = findViewById(R.id.recyclerView2);
 
-        data = MemoBook.listAll(MemoBook.class);
+        data = Select.from(MemoBook.class).orderBy("Id DESC").list();
         adapter = new ChooseMemoBookAdapter(data , this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

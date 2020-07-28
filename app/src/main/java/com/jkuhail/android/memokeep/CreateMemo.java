@@ -1,8 +1,9 @@
 package com.jkuhail.android.memokeep;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 import java.util.TimeZone;
 
 
@@ -43,11 +45,15 @@ public class CreateMemo extends AppCompatActivity  {
     private PopupWindow window;
     private String memoTitle , memoContent , memoDate , tmpTitle , tmpContent;
     private MemoBook memoBook;
+    private Memo memo1;
     private boolean memoImportance , tmpImportance;
     private int memoColor , tmpColor;
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     TmpMemo tmpMemo;
     List<TmpMemo> tmpMemos;
+    boolean isUpdate , isEdit;
+    String tmpId;
+    View main_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +67,8 @@ public class CreateMemo extends AppCompatActivity  {
         color_picker=findViewById(R.id.color_picker);
         memo_book_btn=findViewById(R.id.memo_book_btn);
         star = findViewById(R.id.star);
+        main_view = findViewById(R.id.main_view);
 
-        memo_content.requestFocus();
 
         tmpMemos = TmpMemo.listAll(TmpMemo.class);
         if(!tmpMemos.isEmpty()){
@@ -79,17 +85,53 @@ public class CreateMemo extends AppCompatActivity  {
 
         memoImportance =  getIntent().getBooleanExtra("importance" , memoImportance);
 
+        //edit memo
+        memo1 = (Memo) getIntent().getSerializableExtra("MemoObject");
+        if(memo1 != null){
+            isUpdate = true;
+            isEdit = true;
+            tmpId = getIntent().getStringExtra("memoId");
+            memo_title.setText(memo1.getTitle());
+            memo_content.setText(memo1.getContent());
+            memo_book_btn.setText(memo1.getMemoBookName());
+            memoColor = memo1.getColor();
+            memoImportance = memo1.isImportance();
+
+            memo_title.setFocusable(false);
+            memo_content.setFocusable(false);
+            star.setVisibility(View.INVISIBLE);
+            color_picker.setVisibility(View.INVISIBLE);
+            save_btn.setVisibility(View.INVISIBLE);
+        }
+        while(isEdit){
+            main_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    memo_title.setFocusableInTouchMode(true);
+                    memo_content.setFocusableInTouchMode(true);
+                    star.setVisibility(View.VISIBLE);
+                    color_picker.setVisibility(View.VISIBLE);
+                    save_btn.setVisibility(View.VISIBLE);
+                    memo_content.requestFocus();
+                    isEdit = false;
+                }
+            });
+
+        }
 
         memoBook = (MemoBook) getIntent().getSerializableExtra("MemoBookObject");
         //(condition) ? expressionTrue :  expressionFalse;
-        memo_book_btn.setText(memoBook != null ? memoBook.getName() : "Choose Memo book");
-
+        //memo_book_btn.setText(memoBook != null ? memoBook.getName() : "Choose Memo book");
+        if(memoBook != null){
+            memo_book_btn.setText(memoBook.getName());
+        }
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CreateMemo.this , MainActivity.class);
                 startActivity(intent);
+                isUpdate = false;
                 if(!tmpMemos.isEmpty()) {
                     tmpMemo.delete();
                 }
@@ -169,23 +211,33 @@ public class CreateMemo extends AppCompatActivity  {
                 if(memo_title.length() == 0 && memo_content.length() == 0 ){
                     Toast.makeText(CreateMemo.this , "No content to save. Memo discarded." , Toast.LENGTH_LONG).show();
                 }else{
-                    if(memoBook != null){
-                        Memo memo = new Memo(memoTitle , memoContent , memoDate , memoImportance , memoColor , memoBook.getName());
-                        memo.save();
+                    if(!isUpdate){
+                        if(memoBook != null){
+                            Memo memo = new Memo(memoTitle , memoContent , memoDate , memoImportance , memoColor , memoBook.getName());
+                            memo.save();
+                        }else{
+                            Memo memo = new Memo(memoTitle , memoContent , memoDate , memoImportance , memoColor , "");
+                            memo.save();
+                        }
+                        Toast.makeText(CreateMemo.this , "Memo saved." , Toast.LENGTH_LONG).show();
                     }else{
-                        Memo memo = new Memo(memoTitle , memoContent , memoDate , memoImportance , memoColor , "");
+                        Memo memo = Memo.findById(Memo.class , Long.parseLong(tmpId));
+                        memo.setTitle(memo_title.getText().toString().trim());
+                        memo.setContent(memo_content.getText().toString().trim());
+                        memo.setColor(memoColor);
+                        memo.setImportance(memoImportance);
+                        memo.setMemoBookName(memoBook != null ? memoBook.getName() : memo1.getMemoBookName());
                         memo.save();
+                        Toast.makeText(CreateMemo.this , "Memo updated." , Toast.LENGTH_LONG).show();
+                        isUpdate = false;
                     }
-
-                    Toast.makeText(CreateMemo.this , "Memo saved." , Toast.LENGTH_LONG).show();
-                }
+                    }
                 Intent intent = new Intent(CreateMemo.this , MainActivity.class);
                 startActivity(intent);
             }
         });
 
     }
-
 
     public void ShowThirdPopupWindow(){
         try {
@@ -302,5 +354,6 @@ public class CreateMemo extends AppCompatActivity  {
         }
         Intent intent = new Intent(getApplicationContext() , MainActivity.class);
         getApplicationContext().startActivity(intent);
+        isUpdate = false;
     }
 }

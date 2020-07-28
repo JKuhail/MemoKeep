@@ -1,6 +1,7 @@
 package com.jkuhail.android.memokeep.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jkuhail.android.memokeep.CreateMemo;
 import com.jkuhail.android.memokeep.R;
 import com.jkuhail.android.memokeep.models.Memo;
 
@@ -43,8 +45,12 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.MemoHolder> {
         holder.memo_main_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: change this!
-                Toast.makeText(context, "item clicked! the Id is: " + memo.getId().toString(), Toast.LENGTH_SHORT).show();
+
+                String memoId = memo.getId().toString();
+                Intent i = new Intent(context , CreateMemo.class);
+                i.putExtra("MemoObject", memo);
+                i.putExtra("memoId" , memoId);
+                context.startActivity(i);
             }
         });
 

@@ -2,8 +2,10 @@ package com.jkuhail.android.memokeep.models;
 
 import com.orm.SugarRecord;
 
+import java.io.Serializable;
 
-public class Memo extends SugarRecord {
+
+public class Memo extends SugarRecord implements Serializable {
 
     String title , content , date , memoBookName;
     boolean importance;
