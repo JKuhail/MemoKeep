@@ -1,159 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".CreateMemo">
 
     <View
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-
-<androidx.core.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_centerInParent="true">
-
-
-
-<LinearLayout
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".CreateMemo"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:layout_alignParentTop="true">
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp">
-
-        <Button
-            android:id="@+id/back_btn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/ic_back"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="12dp" />
-
-
-        <Button
-            android:id="@+id/save_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/gudea_bold"
-            android:text="SAVE"
-            android:textColor="@color/button_selector"
-            android:textSize="16sp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@android:color/transparent"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"/>
-
-
-    </RelativeLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:layout_marginTop="8dp"
-        android:layout_gravity="center_vertical">
-
-        <EditText
-            android:id="@+id/memo_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Enter title"
-            android:inputType="text"
-            android:singleLine="true"
-            android:textColor="@color/disabled_icon_color"
-            android:textStyle="bold"
-            android:textSize="22sp"
-            android:background="@android:color/transparent"
-            android:layout_weight="4"/>
-
-
-
-
-    </LinearLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:layout_marginTop="12dp"
-        android:layout_gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/memo_book_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_memo_book_light"
-            android:text="Choose a Memo book"
-            android:textColor="@color/dark_grey"
-            android:textStyle="bold"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/color_picker"
-            android:drawablePadding="6dp"
-            android:layout_marginEnd="12dp"/>
-
-        <ImageView
-            android:id="@+id/color_picker"
-            android:layout_width="21dp"
-            android:layout_height="21dp"
-            android:background="@drawable/ic_dropper"
-            android:layout_toStartOf="@id/star"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginEnd="12dp"/>
-        <ImageView
-            android:id="@+id/star"
-            android:layout_width="21dp"
-            android:layout_height="21dp"
-            android:src="@drawable/ic_star_dark"
-            android:layout_marginEnd="5dp"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_alignParentEnd="true"/>
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"/>
-
-
-    <EditText
-        android:id="@+id/memo_content"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:hint="Enter memo"
-        android:inputType="textMultiLine"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:layout_marginTop="8dp" />
+        android:layout_centerInParent="true">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            tools:context=".CreateMemo">
 
-</androidx.core.widget.NestedScrollView>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_color"
+                android:theme="@style/AppTheme"
+                app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/back_btn"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/ic_back" />
+
+
+                    <Button
+                        android:id="@+id/save_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/gudea_bold"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:text="SAVE"
+                        android:textColor="@color/button_selector"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
+
+                <EditText
+                    android:id="@+id/memo_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:background="@android:color/transparent"
+                    android:hint="Enter title"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/disabled_icon_color"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="12dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
+
+                <TextView
+                    android:id="@+id/memo_book_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="12dp"
+                    android:layout_toStartOf="@id/color_picker"
+                    android:drawableStart="@drawable/ic_memo_book_light"
+                    android:drawablePadding="6dp"
+                    android:text="Choose a Memo book"
+                    android:textColor="@color/dark_grey"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/color_picker"
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_toStartOf="@id/star"
+                    android:background="@drawable/ic_dropper"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground" />
+
+                <ImageView
+                    android:id="@+id/star"
+                    android:layout_width="21dp"
+                    android:layout_height="21dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:src="@drawable/ic_star_dark" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginBottom="4dp"
+                android:background="@color/grey" />
+
+
+            <EditText
+                android:id="@+id/memo_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:hint="Enter memo"
+                android:inputType="textMultiLine"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

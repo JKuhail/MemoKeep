@@ -1,29 +1,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <androidx.cardview.widget.CardView
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="false">
+        android:background="?attr/colorPrimary"
+        android:theme="@style/AppTheme"
+        android:elevation="4dp"
+        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:padding="6dp">
+            android:padding="6dp"
+            android:layout_marginEnd="46dp">
 
             <LinearLayout
                 android:id="@+id/memo_keep"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="20dp"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/memo"
@@ -43,21 +47,8 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="23sp" />
             </LinearLayout>
-
-            <Button
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:background="@drawable/ic_menu"
-                android:layout_alignParentEnd="true"
-                android:layout_alignEnd="@id/memo_keep"
-                android:layout_marginEnd="4dp"
-                android:layout_centerVertical="true"/>
-
-
         </RelativeLayout>
-
-    </androidx.cardview.widget.CardView>
-
+    </androidx.appcompat.widget.Toolbar>
 
 
     <FrameLayout
@@ -65,8 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/app_bar"
-        android:layout_marginBottom="48dp"/>
-
+        android:layout_marginBottom="48dp" />
 
 
     <com.luseen.spacenavigation.SpaceNavigationView
@@ -74,20 +64,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        app:layout_behavior="com.luseen.spacenavigation.SpaceNavigationViewBehavior"
+        android:elevation="32dp"
+        android:fontFamily="@font/gudea"
+        android:gravity="bottom"
+        app:active_centre_button_icon_color="@color/colorPrimary"
         app:active_item_color="@color/colorAccent"
         app:centre_button_color="@color/colorAccent"
-        app:inactive_item_color="@color/disabled_icon_color"
-        app:space_background_color="@color/colorPrimary"
         app:centre_button_icon="@drawable/ic_plus"
-        app:active_centre_button_icon_color="@color/colorPrimary"
         app:inactive_centre_button_icon_color="@color/colorPrimary"
-        app:space_item_icon_size="@dimen/space_item_icon_default_size"
+        app:inactive_item_color="@color/disabled_icon_color"
+        app:layout_behavior="com.luseen.spacenavigation.SpaceNavigationViewBehavior"
+        app:space_background_color="@color/colorPrimary"
         app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
-        app:space_item_text_size="@dimen/space_item_text_default_size"
-        android:gravity="bottom"
-        android:elevation="32dp"
-        android:fontFamily="@font/gudea" />
+        app:space_item_icon_size="@dimen/space_item_icon_default_size"
+        app:space_item_text_size="@dimen/space_item_text_default_size" />
 </RelativeLayout>
 
 

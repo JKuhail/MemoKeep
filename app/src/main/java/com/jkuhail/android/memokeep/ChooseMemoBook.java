@@ -1,6 +1,7 @@
 package com.jkuhail.android.memokeep;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +31,7 @@ import java.util.List;
 import static com.jkuhail.android.memokeep.MainActivity.getCurrentDate;
 
 public class ChooseMemoBook extends AppCompatActivity {
-
+    Toolbar appBar;
     Button new_notebook_fragment , back_to_memo_btn;
     RecyclerView recyclerView;
     ChooseMemoBookAdapter adapter;
@@ -42,6 +43,8 @@ public class ChooseMemoBook extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_memo_book);
+        appBar = findViewById(R.id.app_bar);
+        setSupportActionBar(appBar);
 
         new_notebook_fragment = findViewById(R.id.new_notebook_fragment2);
         back_to_memo_btn = findViewById(R.id.back_to_memo_btn);
@@ -66,8 +69,7 @@ public class ChooseMemoBook extends AppCompatActivity {
         back_to_memo_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext() , CreateMemo.class);
-                startActivity(intent);
+                finish();
             }
         });
 
@@ -135,6 +137,7 @@ public class ChooseMemoBook extends AppCompatActivity {
         }catch (Exception e){}
 
     }
+
     public final boolean isDuplicated(String word){
         List<MemoBook> memoBooks = MemoBook.listAll(MemoBook.class);
         String memoBookName;

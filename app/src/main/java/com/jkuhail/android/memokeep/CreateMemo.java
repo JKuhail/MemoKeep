@@ -129,12 +129,11 @@ public class CreateMemo extends AppCompatActivity  {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CreateMemo.this , MainActivity.class);
-                startActivity(intent);
                 isUpdate = false;
                 if(!tmpMemos.isEmpty()) {
                     tmpMemo.delete();
                 }
+                finish();
             }
         });
 

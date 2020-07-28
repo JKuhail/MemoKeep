@@ -16,11 +16,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.jkuhail.android.memokeep.models.MemoBook;
 import com.luseen.spacenavigation.SpaceItem;
@@ -36,6 +37,7 @@ import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
+    Toolbar appBar;
     SpaceNavigationView navigationView;
     private PopupWindow window;
     public static final String DATE_FORMAT = "MMM dd, yyyy";
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        appBar = findViewById(R.id.app_bar);
+        setSupportActionBar(appBar);
 
 
         getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemosFragment()).commit();
