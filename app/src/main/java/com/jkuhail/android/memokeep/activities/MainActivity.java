@@ -1,4 +1,4 @@
-package com.jkuhail.android.memokeep;
+package com.jkuhail.android.memokeep.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,20 +18,23 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.jkuhail.android.memokeep.fragments.MemoBooksFragment;
+import com.jkuhail.android.memokeep.fragments.MemosFragment;
+import com.jkuhail.android.memokeep.R;
+import com.jkuhail.android.memokeep.helpers.DbHelper;
 import com.jkuhail.android.memokeep.models.MemoBook;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     SpaceNavigationView navigationView;
     private PopupWindow window;
     public static final String DATE_FORMAT = "MMM dd, yyyy";
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,44 +53,41 @@ public class MainActivity extends AppCompatActivity {
         appBar = findViewById(R.id.app_bar);
         setSupportActionBar(appBar);
 
+        context = getApplicationContext();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemosFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemosFragment()).commit();
         navigationView = findViewById(R.id.space);
         navigationView.initWithSaveInstanceState(savedInstanceState);
         navigationView.addSpaceItem(new SpaceItem("Memos", R.drawable.ic_note));
         navigationView.addSpaceItem(new SpaceItem("Memo books", R.drawable.ic_notebook));
 
-
-
-
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
-                Intent intent = new Intent(getApplicationContext() , CreateMemo.class);
+                Intent intent = new Intent(context, CreateMemoActivity.class);
                 startActivity(intent);
             }
 
             @Override
             public void onItemClick(int itemIndex, String itemName) {
-                switch (itemIndex){
+                switch (itemIndex) {
                     case 0:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemosFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemosFragment()).commit();
                         break;
                     case 1:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemoBooksFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemoBooksFragment()).commit();
                         break;
                 }
-
             }
 
             @Override
             public void onItemReselected(int itemIndex, String itemName) {
-                switch (itemIndex){
+                switch (itemIndex) {
                     case 0:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemosFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemosFragment()).commit();
                         break;
                     case 1:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer , new MemoBooksFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemoBooksFragment()).commit();
                         break;
                 }
             }
@@ -106,15 +107,14 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.archive) {
-            Intent intent = new Intent(getApplicationContext(), Archive.class);
+            Intent intent = new Intent(context, ArchiveActivity.class);
             startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
 
-    public void ShowSecondPopupWindow(){
+    public void ShowSecondPopupWindow() {
         try {
             final Button ok;
             final EditText ed_new_notebook;
@@ -131,32 +131,29 @@ public class MainActivity extends AppCompatActivity {
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             window.setOutsideTouchable(true);
             window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-            //  window.showAtLocation(layout, 17, 100, 100);
+
 
             ed_new_notebook = layout.findViewById(R.id.ed_new_notebook);
             ok = layout.findViewById(R.id.ok);
             error_message = layout.findViewById(R.id.error_message);
-            ok.setOnClickListener(new View.OnClickListener() {
+            ok.setOnClickListener(v -> {
+                String memo_book_name = ed_new_notebook.getText().toString().trim();
 
-                @Override
-                public void onClick(View v) {
-                    String memo_book_name = ed_new_notebook.getText().toString().trim();
-
-                            if (ed_new_notebook.length() == 0) {
-                                error_message.setVisibility(View.VISIBLE);
-                                error_message.setText("Please enter a name!");
-                                ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                            } else if (isDuplicated(memo_book_name)) {
-                                error_message.setVisibility(View.VISIBLE);
-                                error_message.setText("This Memo book is already exists!");
-                                ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                            } else {
-                                String date = getCurrentDate();
-                                MemoBook memoBook = new MemoBook(memo_book_name, date);
-                                memoBook.save();
-                                window.dismiss();
-                            }
-                        }
+                if (ed_new_notebook.length() == 0) {
+                    error_message.setVisibility(View.VISIBLE);
+                    error_message.setText("Please enter a name!");
+                    ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
+                } else if (isDuplicated(memo_book_name)) {
+                    error_message.setVisibility(View.VISIBLE);
+                    error_message.setText("This Memo book is already exists!");
+                    ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
+                } else {
+                    String date = getCurrentDate();
+                    int id = DbHelper.incrementMemoBookId(context);
+                    MemoBook memoBook = new MemoBook(id, memo_book_name, date);
+                    DbHelper.saveMemoBook(memoBook, context);
+                    window.dismiss();
+                }
             });
             layout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -167,9 +164,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
     }
+
     public static String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -185,13 +184,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(a);
     }
 
-    public final boolean isDuplicated(String word){
-        List<MemoBook> memoBooks = MemoBook.listAll(MemoBook.class);
+    public final boolean isDuplicated(String word) {
+        ArrayList<MemoBook> memoBooks = DbHelper.retrieveMemoBooks(context);
         String memoBookName;
-        if(!memoBooks.isEmpty()){
+        if (!memoBooks.isEmpty()) {
             for (MemoBook memoBook : memoBooks) {
                 memoBookName = memoBook.getName();
-                if(word.equals(memoBookName)){
+                if (word.equals(memoBookName)) {
                     return true;
                 }
             }

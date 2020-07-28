@@ -42,7 +42,7 @@ public class MemoBookAdapter extends RecyclerView.Adapter<MemoBookAdapter.Notebo
             @Override
             public void onClick(View view) {
                 //TODO: change this!
-                Toast.makeText(context, "item clicked! the Id is: " + memoBook.getId().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "item clicked! the Id is: " + memoBook.getId(), Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -1,22 +1,34 @@
 package com.jkuhail.android.memokeep.models;
 
-import com.orm.SugarRecord;
-import com.orm.dsl.Table;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class MemoBook extends SugarRecord implements Serializable {
-    String name , date;
+public class MemoBook extends RealmObject implements Parcelable {
 
-    public MemoBook() {
-    }
+    @PrimaryKey
+    private int id;
+    private String name , date;
 
-    public MemoBook(String name , String date) {
+    public MemoBook(int id, String name, String date) {
+        this.id = id;
         this.name = name;
         this.date = date;
     }
 
+    public MemoBook() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -35,5 +47,33 @@ public class MemoBook extends SugarRecord implements Serializable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.date);
+    }
+
+    protected MemoBook(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.date = in.readString();
+    }
+
+    public static final Parcelable.Creator<MemoBook> CREATOR = new Parcelable.Creator<MemoBook>() {
+        @Override
+        public MemoBook createFromParcel(Parcel source) {
+            return new MemoBook(source);
+        }
+
+        @Override
+        public MemoBook[] newArray(int size) {
+            return new MemoBook[size];
+        }
+    };
 }

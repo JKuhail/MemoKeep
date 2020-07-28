@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.jkuhail.android.memokeep.MainActivity">
+    tools:context="com.jkuhail.android.memokeep.activities.MainActivity">
     <item
         android:id="@+id/notes"
         android:icon="@drawable/ic_note"

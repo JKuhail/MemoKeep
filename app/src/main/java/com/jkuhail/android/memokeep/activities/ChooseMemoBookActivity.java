@@ -1,10 +1,11 @@
-package com.jkuhail.android.memokeep;
+package com.jkuhail.android.memokeep.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,24 +21,25 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.jkuhail.android.memokeep.R;
 import com.jkuhail.android.memokeep.adapters.ChooseMemoBookAdapter;
-import com.jkuhail.android.memokeep.models.Memo;
+import com.jkuhail.android.memokeep.helpers.Constants;
+import com.jkuhail.android.memokeep.helpers.DbHelper;
 import com.jkuhail.android.memokeep.models.MemoBook;
-import com.orm.query.Select;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jkuhail.android.memokeep.MainActivity.getCurrentDate;
+import static com.jkuhail.android.memokeep.activities.MainActivity.getCurrentDate;
 
-public class ChooseMemoBook extends AppCompatActivity {
+public class ChooseMemoBookActivity extends AppCompatActivity {
     Toolbar appBar;
     Button new_notebook_fragment , back_to_memo_btn;
     RecyclerView recyclerView;
     ChooseMemoBookAdapter adapter;
     private PopupWindow window;
     List<MemoBook> data = new ArrayList<>();
-    List<MemoBook> memoBooks;
+//    List<MemoBook> memoBooks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +52,12 @@ public class ChooseMemoBook extends AppCompatActivity {
         back_to_memo_btn = findViewById(R.id.back_to_memo_btn);
         recyclerView = findViewById(R.id.recyclerView2);
 
-        data = Select.from(MemoBook.class).orderBy("Id DESC").list();
+        data = DbHelper.retrieveMemoBooks(getApplicationContext());
         adapter = new ChooseMemoBookAdapter(data , this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        memoBooks = MemoBook.listAll(MemoBook.class);
+//        memoBooks = MemoBook.listAll(MemoBook.class);
 
         new_notebook_fragment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +83,7 @@ public class ChooseMemoBook extends AppCompatActivity {
             final EditText ed_new_notebook;
             final TextView error_message;
 
-            LayoutInflater inflater = (LayoutInflater) ChooseMemoBook.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) ChooseMemoBookActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.new_memo_book_popup, null);
 
             int width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -102,26 +104,27 @@ public class ChooseMemoBook extends AppCompatActivity {
 
                 @Override
                 public void onClick(View v) {
-                    String notebook_name = ed_new_notebook.getText().toString().trim();
+                    String memobook_name = ed_new_notebook.getText().toString().trim();
 
                         if (ed_new_notebook.length() == 0) {
                             error_message.setVisibility(View.VISIBLE);
                             error_message.setText("Please enter a name!");
                             ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                        }else if(isDuplicated(notebook_name)){
+                        }else if(isDuplicated(memobook_name)){
                             error_message.setVisibility(View.VISIBLE);
                             error_message.setText("This Memo book is already exists!");
                             ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
                         } else {
                             //TODO: handle the date
                             String date = getCurrentDate();
-                            MemoBook memoBook = new MemoBook(notebook_name, date);
-                            memoBook.save();
-                            Intent intent = new Intent(getApplicationContext(), CreateMemo.class);
-                            intent.putExtra("MemoBookObject", memoBook);
-                            getApplicationContext().startActivity(intent);
+                            int id = DbHelper.incrementMemoBookId(getApplicationContext());
+                            MemoBook memoBook = new MemoBook(id, memobook_name, date);
+                            DbHelper.saveMemoBook( memoBook, getApplicationContext());
+                            Intent intent = new Intent();
+                            intent.putExtra(Constants.MEMO_BOOK_ID, id);
+                            setResult(Activity.RESULT_OK, intent);
                             window.dismiss();
-
+                            finish();
                         }
                     }
             });
@@ -139,7 +142,7 @@ public class ChooseMemoBook extends AppCompatActivity {
     }
 
     public final boolean isDuplicated(String word){
-        List<MemoBook> memoBooks = MemoBook.listAll(MemoBook.class);
+        ArrayList<MemoBook> memoBooks = DbHelper.retrieveMemoBooks(getApplicationContext());
         String memoBookName;
         if(!memoBooks.isEmpty()){
             for (MemoBook memoBook : memoBooks) {

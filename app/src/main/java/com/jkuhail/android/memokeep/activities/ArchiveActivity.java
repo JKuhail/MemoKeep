@@ -1,10 +1,12 @@
-package com.jkuhail.android.memokeep;
+package com.jkuhail.android.memokeep.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class Archive extends AppCompatActivity {
+import com.jkuhail.android.memokeep.R;
+
+public class ArchiveActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

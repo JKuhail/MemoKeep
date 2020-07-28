@@ -13,8 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jkuhail.android.memokeep.CreateMemo;
+import com.jkuhail.android.memokeep.activities.CreateMemoActivity;
 import com.jkuhail.android.memokeep.R;
+import com.jkuhail.android.memokeep.helpers.Constants;
 import com.jkuhail.android.memokeep.models.Memo;
 
 
@@ -54,8 +55,8 @@ public class StarredMemoAdapter extends RecyclerView.Adapter<StarredMemoAdapter.
             holder.starred_memos_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context , CreateMemo.class);
-                    intent.putExtra("importance" , true);
+                    Intent intent = new Intent(context , CreateMemoActivity.class);
+                    intent.putExtra(Constants.MEMO_IMPORTANCE, true);
                     context.startActivity(intent);
                 }
             });
@@ -105,8 +106,9 @@ public class StarredMemoAdapter extends RecyclerView.Adapter<StarredMemoAdapter.
             holder.memo_main.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO: change this!
-                    Toast.makeText(context, "item clicked! the Id is: " + memo.getId().toString(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context , CreateMemoActivity.class);
+                    intent.putExtra(Constants.MEMO_OBJECT, memo);
+                    context.startActivity(intent);
                 }
             });
         }

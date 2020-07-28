@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".ChooseMemoBook"
+    tools:context=".activities.ChooseMemoBookActivity"
     android:background="@color/background_color">
 
     <androidx.appcompat.widget.Toolbar

@@ -1,4 +1,4 @@
-package com.jkuhail.android.memokeep;
+package com.jkuhail.android.memokeep.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jkuhail.android.memokeep.R;
+import com.jkuhail.android.memokeep.activities.MainActivity;
 import com.jkuhail.android.memokeep.adapters.MemoBookAdapter;
+import com.jkuhail.android.memokeep.helpers.DbHelper;
 import com.jkuhail.android.memokeep.models.MemoBook;
-import com.orm.query.Select;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ public class MemoBooksFragment extends Fragment {
         View root =  inflater.inflate(R.layout.fragment_memo_books, container, false);
         recyclerView = root.findViewById(R.id.recyclerView);
 
-        data = Select.from(MemoBook.class).orderBy("Id DESC").list();
+        data = DbHelper.retrieveMemoBooks(getContext());
         adapter = new MemoBookAdapter(data , getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
