@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jkuhail.android.memokeep.activities.CreateMemoActivity;
 import com.jkuhail.android.memokeep.R;
 import com.jkuhail.android.memokeep.helpers.Constants;
+import com.jkuhail.android.memokeep.helpers.DbHelper;
 import com.jkuhail.android.memokeep.models.Memo;
 
 import java.util.List;
@@ -41,13 +43,33 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.MemoHolder> {
         holder.t2_memo_content.setText(memo.getContent());
         holder.memo_date.setText(memo.getDate());
 
-        holder.memo_main_2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context , CreateMemoActivity.class);
-                intent.putExtra(Constants.MEMO_OBJECT, memo);
-                context.startActivity(intent);
-            }
+        holder.memo_main_2.setOnClickListener(view -> {
+            Intent intent = new Intent(context , CreateMemoActivity.class);
+            intent.putExtra(Constants.MEMO_OBJECT, memo);
+            context.startActivity(intent);
+        });
+
+        holder.memo_main_2.setOnLongClickListener(v -> {
+            PopupMenu popup = new PopupMenu(context, holder.memo_main_2);
+            popup.inflate(R.menu.memo_menu);
+            popup.setOnMenuItemClickListener(item -> {
+
+                switch (item.getItemId()){
+                    case R.id.delete :
+                        DbHelper.deleteMemo(memo.getId(), context);
+                        data2.remove(position);
+                        notifyItemRemoved(position);
+                        return true;
+                    case R.id.archive:
+/*                        DbHelper.findMemo(memo.getId(), context).setArchive(true);
+                        data2.remove(position);
+                        notifyItemRemoved(position);*/
+                    default:
+                        return false;
+                }
+            });
+            popup.show();
+            return true;
         });
     }
 

@@ -1,5 +1,6 @@
 package com.jkuhail.android.memokeep.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,6 @@ import com.jkuhail.android.memokeep.helpers.DbHelper;
 import com.jkuhail.android.memokeep.models.Memo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MemosFragment extends Fragment {
     RecyclerView recyclerView_starred_memos , recyclerView_memos;
@@ -49,6 +49,7 @@ public class MemosFragment extends Fragment {
 
         return root;
     }
+
 
 
 }

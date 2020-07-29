@@ -3,6 +3,7 @@ package com.jkuhail.android.memokeep.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.View;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -134,4 +135,5 @@ public class Memo extends RealmObject implements Parcelable {
             return new Memo[size];
         }
     };
+
 }

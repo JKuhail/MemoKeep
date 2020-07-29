@@ -26,6 +26,7 @@ import com.jkuhail.android.memokeep.fragments.MemoBooksFragment;
 import com.jkuhail.android.memokeep.fragments.MemosFragment;
 import com.jkuhail.android.memokeep.R;
 import com.jkuhail.android.memokeep.helpers.DbHelper;
+import com.jkuhail.android.memokeep.helpers.Helper;
 import com.jkuhail.android.memokeep.models.MemoBook;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(appBar);
 
         context = getApplicationContext();
+
+//        Helper.hideSoftKeyboard(MainActivity.this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemosFragment()).commit();
         navigationView = findViewById(R.id.space);
@@ -148,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     error_message.setText("This Memo book is already exists!");
                     ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
                 } else {
-                    String date = getCurrentDate();
+                    String date = Helper.getCurrentDate(DATE_FORMAT);
                     int id = DbHelper.incrementMemoBookId(context);
                     MemoBook memoBook = new MemoBook(id, memo_book_name, date);
                     DbHelper.saveMemoBook(memoBook, context);
@@ -169,12 +172,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static String getCurrentDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date today = Calendar.getInstance().getTime();
-        return dateFormat.format(today);
-    }
 
     @Override
     public void onBackPressed() {

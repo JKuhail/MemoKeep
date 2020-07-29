@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,11 +13,16 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,14 +34,10 @@ import android.widget.Toast;
 import com.jkuhail.android.memokeep.R;
 import com.jkuhail.android.memokeep.helpers.Constants;
 import com.jkuhail.android.memokeep.helpers.DbHelper;
+import com.jkuhail.android.memokeep.helpers.Helper;
 import com.jkuhail.android.memokeep.models.Memo;
 import com.jkuhail.android.memokeep.models.MemoBook;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-import java.util.TimeZone;
 
 
 public class CreateMemoActivity extends AppCompatActivity {
@@ -52,8 +53,7 @@ public class CreateMemoActivity extends AppCompatActivity {
     private boolean memoImportance;
     private int memoColor;
     public static final String DATE_FORMAT = "MMM dd, yyyy";
-    String tmpId;
-    View main_view;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,19 +67,43 @@ public class CreateMemoActivity extends AppCompatActivity {
         color_picker = findViewById(R.id.color_picker);
         memo_book_btn = findViewById(R.id.memo_book_btn);
         star = findViewById(R.id.star);
-        main_view = findViewById(R.id.main_view);
+
+        memo_content.setAutoLinkMask(Linkify.WEB_URLS);
+        memo_content.setMovementMethod(LinkMovementMethod.getInstance());
+        //If the edit text contains previous text with potential links
+        Linkify.addLinks(memo_content, Linkify.ALL);
+
+
+        memo_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Linkify.addLinks(s, Linkify.ALL);
+            }
+        });
+
+        context = getApplicationContext();
 
 
         memoImportance = getIntent().getBooleanExtra(Constants.MEMO_IMPORTANCE, memoImportance);
 
-        try{
+        try {
             editedMemo = getIntent().getExtras().getParcelable(Constants.MEMO_OBJECT);
-        }catch (Exception e){
+        } catch (Exception e) {
             editedMemo = null;
         }
 
 
-        /** Editing mode...*/
+        //Editing mode
         if (editedMemo != null) {
             memo_title.setText(editedMemo.getTitle());
 
@@ -89,14 +113,19 @@ public class CreateMemoActivity extends AppCompatActivity {
 
             memoImportance = editedMemo.isImportance();
 
-            memoBook = DbHelper.findMemoBook(editedMemo.getMemoBookId(), getApplicationContext());
+            memoBook = DbHelper.findMemoBook(editedMemo.getMemoBookId(), context);
             memo_book_btn.setText(memoBook.getName());
+
+            save_btn.setText("Update");
+        } else {
+            memo_content.requestFocus();
+            Helper.showSoftKeyboard(CreateMemoActivity.this);
         }
 
         back_btn.setOnClickListener(view -> finish());
 
         memo_book_btn.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), ChooseMemoBookActivity.class);
+            Intent intent = new Intent(context, ChooseMemoBookActivity.class);
             startActivityForResult(intent, 2);
         });
 
@@ -141,15 +170,15 @@ public class CreateMemoActivity extends AppCompatActivity {
             memoTitle = memo_title.getText().toString().trim();
             memoContent = memo_content.getText().toString().trim();
 
-            memoDate = getCurrentDate();
+            memoDate = Helper.getCurrentDate(DATE_FORMAT);
 
             if (memo_title.length() == 0 && memo_content.length() == 0) {
                 Toast.makeText(CreateMemoActivity.this, "No content to save. Memo discarded.", Toast.LENGTH_LONG).show();
             } else {
                 if (editedMemo == null) {
-                    int memoId = DbHelper.incrementMemoId(getApplicationContext());
+                    int memoId = DbHelper.incrementMemoId(context);
                     Memo memo = new Memo(memoId, memoTitle, memoContent, memoDate, memoBookId, memoImportance, false, memoColor);
-                    DbHelper.saveMemo(memo, getApplicationContext());
+                    DbHelper.saveMemo(memo, context);
                     Toast.makeText(CreateMemoActivity.this, "Memo saved.", Toast.LENGTH_LONG).show();
                 } else {
                     editedMemo.setTitle(memoTitle);
@@ -158,10 +187,11 @@ public class CreateMemoActivity extends AppCompatActivity {
                     editedMemo.setImportance(memoImportance);
                     editedMemo.setColor(memoColor);
                     editedMemo.setDate(memoDate);
-                    DbHelper.saveMemo(editedMemo, getApplicationContext());
+                    DbHelper.saveMemo(editedMemo, context);
                     Toast.makeText(CreateMemoActivity.this, "Memo updated.", Toast.LENGTH_LONG).show();
                 }
             }
+            Helper.hideSoftKeyboard(CreateMemoActivity.this);
             Intent intent = new Intent(CreateMemoActivity.this, MainActivity.class);
             startActivity(intent);
         });
@@ -173,7 +203,7 @@ public class CreateMemoActivity extends AppCompatActivity {
             final CardView color1, color3, color4, color5, color6;
             final Button btn_default;
 
-            hideSoftKeyboard(CreateMemoActivity.this);
+            Helper.hideSoftKeyboard(CreateMemoActivity.this);
 
             LayoutInflater inflater = (LayoutInflater) CreateMemoActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.color_picker_popup_window, null);
@@ -187,7 +217,6 @@ public class CreateMemoActivity extends AppCompatActivity {
             window.setOutsideTouchable(true);
             window.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
-
             color1 = layout.findViewById(R.id.memo_color_1);
             color3 = layout.findViewById(R.id.memo_color_3);
             color4 = layout.findViewById(R.id.memo_color_4);
@@ -196,56 +225,38 @@ public class CreateMemoActivity extends AppCompatActivity {
             btn_default = layout.findViewById(R.id.btn_default);
 
 
-            color1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    memoColor = 1;
-                    color_picker.getBackground().setColorFilter(Color.parseColor("#D32727"), PorterDuff.Mode.SRC_ATOP);
-                    window.dismiss();
-                }
+            color1.setOnClickListener(view -> {
+                memoColor = 1;
+                color_picker.getBackground().setColorFilter(Color.parseColor("#D32727"), PorterDuff.Mode.SRC_ATOP);
+                window.dismiss();
             });
 
-            color3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    memoColor = 3;
-                    color_picker.getBackground().setColorFilter(Color.parseColor("#EF8E0B"), PorterDuff.Mode.SRC_ATOP);
-                    window.dismiss();
-                }
+            color3.setOnClickListener(view -> {
+                memoColor = 3;
+                color_picker.getBackground().setColorFilter(Color.parseColor("#EF8E0B"), PorterDuff.Mode.SRC_ATOP);
+                window.dismiss();
             });
-            color4.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    memoColor = 4;
-                    color_picker.getBackground().setColorFilter(Color.parseColor("#03A8C4"), PorterDuff.Mode.SRC_ATOP);
-                    window.dismiss();
-                }
+            color4.setOnClickListener(view -> {
+                memoColor = 4;
+                color_picker.getBackground().setColorFilter(Color.parseColor("#03A8C4"), PorterDuff.Mode.SRC_ATOP);
+                window.dismiss();
             });
-            color5.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    memoColor = 5;
-                    color_picker.getBackground().setColorFilter(Color.parseColor("#516F55"), PorterDuff.Mode.SRC_ATOP);
-                    window.dismiss();
-                }
+            color5.setOnClickListener(view -> {
+                memoColor = 5;
+                color_picker.getBackground().setColorFilter(Color.parseColor("#516F55"), PorterDuff.Mode.SRC_ATOP);
+                window.dismiss();
             });
-            color6.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    memoColor = 6;
-                    color_picker.getBackground().setColorFilter(Color.parseColor("#842c72"), PorterDuff.Mode.SRC_ATOP);
-                    window.dismiss();
-                }
+            color6.setOnClickListener(view -> {
+                memoColor = 6;
+                color_picker.getBackground().setColorFilter(Color.parseColor("#842c72"), PorterDuff.Mode.SRC_ATOP);
+                window.dismiss();
             });
 
 
-            btn_default.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    memoColor = 0;
-                    color_picker.getBackground().setColorFilter(Color.parseColor("#737373"), PorterDuff.Mode.SRC_ATOP);
-                    window.dismiss();
-                }
+            btn_default.setOnClickListener(view -> {
+                memoColor = 0;
+                color_picker.getBackground().setColorFilter(Color.parseColor("#737373"), PorterDuff.Mode.SRC_ATOP);
+                window.dismiss();
             });
 
             layout.setOnTouchListener(new View.OnTouchListener() {
@@ -259,22 +270,6 @@ public class CreateMemoActivity extends AppCompatActivity {
 
         } catch (Exception e) {
         }
-    }
-
-
-    public static String getCurrentDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date today = Calendar.getInstance().getTime();
-        return dateFormat.format(today);
-    }
-
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override
@@ -291,7 +286,7 @@ public class CreateMemoActivity extends AppCompatActivity {
 
             memoBookId = data.getIntExtra(Constants.MEMO_BOOK_ID, -1);
             if (memoBookId != -1) {
-                memoBook = DbHelper.findMemoBook(memoBookId, getApplicationContext());
+                memoBook = DbHelper.findMemoBook(memoBookId, context);
                 memo_book_btn.setText(memoBook.getName());
             }
         }

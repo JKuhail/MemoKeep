@@ -8,10 +8,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jkuhail.android.memokeep.R;
+import com.jkuhail.android.memokeep.helpers.DbHelper;
 import com.jkuhail.android.memokeep.models.MemoBook;
 
 import java.util.List;
@@ -38,12 +40,29 @@ public class MemoBookAdapter extends RecyclerView.Adapter<MemoBookAdapter.Notebo
         final MemoBook memoBook = data.get(position);
         holder.notebook_name.setText(memoBook.getName());
         holder.notebook_date.setText(memoBook.getDate());
-        holder.notebook_main.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO: change this!
-                Toast.makeText(context, "item clicked! the Id is: " + memoBook.getId(), Toast.LENGTH_SHORT).show();
-            }
+        holder.notebook_main.setOnClickListener(view -> {
+            //TODO: change this!
+            Toast.makeText(context, "item clicked! the Id is: " + memoBook.getId(), Toast.LENGTH_SHORT).show();
+        });
+        holder.notebook_main.setOnLongClickListener(v -> {
+            PopupMenu popup = new PopupMenu(context, holder.notebook_main);
+            popup.inflate(R.menu.memo_book_menu);
+            popup.setOnMenuItemClickListener(item -> {
+
+                switch (item.getItemId()){
+                    case R.id.delete :
+                        int memoBookId = memoBook.getId();
+                        DbHelper.deleteMemoBook(memoBookId, context);
+                        DbHelper.deleteMemos(memoBookId, context);
+                        data.remove(position);
+                        notifyItemRemoved(position);
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+            popup.show();
+            return true;
         });
 
     }

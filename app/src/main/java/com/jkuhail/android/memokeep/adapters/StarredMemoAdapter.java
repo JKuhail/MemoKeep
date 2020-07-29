@@ -22,7 +22,7 @@ import com.jkuhail.android.memokeep.models.Memo;
 import java.util.List;
 
 public class StarredMemoAdapter extends RecyclerView.Adapter<StarredMemoAdapter.MemoHolder> {
-    private List<Memo> data;
+    public List<Memo> data;
     private Context context;
 
     public StarredMemoAdapter(List<Memo> data, Context context) {

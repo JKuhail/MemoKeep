@@ -15,6 +15,7 @@ import io.realm.Sort;
 /**
  * Database class helper
  */
+
 public class DbHelper {
 
 
@@ -34,7 +35,21 @@ public class DbHelper {
         Realm.init(context);
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
-            RealmResults<Memo> rows = realm1.where(Memo.class).equalTo("id", id).findAll();
+            RealmResults<Memo> rows = realm1.where(Memo.class)
+                    .equalTo("id", id)
+                    .findAll();
+            rows.deleteAllFromRealm();
+        });
+    }
+
+    //for deleting memos after deleting a memoBook
+    public static void deleteMemos(final int memoBookId, final Context context) {
+        Realm.init(context);
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            RealmResults<Memo> rows = realm1.where(Memo.class)
+                    .equalTo("memoBookId", memoBookId)
+                    .findAll();
             rows.deleteAllFromRealm();
         });
     }
@@ -44,7 +59,10 @@ public class DbHelper {
         Realm.init(context);
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
-            RealmResults<Memo> memos = realm1.where(Memo.class).sort("id", Sort.DESCENDING).findAll();
+            RealmResults<Memo> memos = realm1.where(Memo.class)
+                    .sort("id", Sort.DESCENDING)
+                    .equalTo("archive", false)
+                    .findAll();
             result.addAll(memos);
         });
         return result;
@@ -55,7 +73,10 @@ public class DbHelper {
         Realm.init(context);
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
-            RealmResults<Memo> memos = realm1.where(Memo.class).equalTo("importance", true).sort("id", Sort.DESCENDING).findAll();
+            RealmResults<Memo> memos = realm1.where(Memo.class)
+                    .equalTo("importance", true)
+                    .sort("id", Sort.DESCENDING)
+                    .findAll();
             result.addAll(memos);
         });
         return result;
@@ -64,7 +85,9 @@ public class DbHelper {
     public static Memo findMemo(final int id, final Context context) {
         Realm.init(context);
         Realm realm = Realm.getDefaultInstance();
-        return realm.where(Memo.class).equalTo("id", id).findFirst();
+        return realm.where(Memo.class)
+                .equalTo("id", id)
+                .findFirst();
     }
 
     public static int incrementMemoId(Context context) {
@@ -91,7 +114,9 @@ public class DbHelper {
         Realm.init(context);
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
-            RealmResults<MemoBook> rows = realm1.where(MemoBook.class).equalTo("id", id).findAll();
+            RealmResults<MemoBook> rows = realm1.where(MemoBook.class)
+                    .equalTo("id", id)
+                    .findAll();
             rows.deleteAllFromRealm();
         });
     }
@@ -101,7 +126,9 @@ public class DbHelper {
         Realm.init(context);
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
-            RealmResults<MemoBook> memoBooks = realm1.where(MemoBook.class).sort("id", Sort.DESCENDING).findAll();
+            RealmResults<MemoBook> memoBooks = realm1.where(MemoBook.class)
+                    .sort("id", Sort.DESCENDING)
+                    .findAll();
             result.addAll(memoBooks);
         });
         return result;
@@ -110,7 +137,9 @@ public class DbHelper {
     public static MemoBook findMemoBook(final int id, final Context context) {
         Realm.init(context);
         Realm realm = Realm.getDefaultInstance();
-        return realm.where(MemoBook.class).equalTo("id", id).findFirst();
+        return realm.where(MemoBook.class)
+                .equalTo("id", id)
+                .findFirst();
     }
 
     public static int incrementMemoBookId(Context context) {

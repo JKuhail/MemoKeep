@@ -25,12 +25,13 @@ import com.jkuhail.android.memokeep.R;
 import com.jkuhail.android.memokeep.adapters.ChooseMemoBookAdapter;
 import com.jkuhail.android.memokeep.helpers.Constants;
 import com.jkuhail.android.memokeep.helpers.DbHelper;
+import com.jkuhail.android.memokeep.helpers.Helper;
 import com.jkuhail.android.memokeep.models.MemoBook;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jkuhail.android.memokeep.activities.MainActivity.getCurrentDate;
+import static com.jkuhail.android.memokeep.activities.MainActivity.DATE_FORMAT;
 
 public class ChooseMemoBookActivity extends AppCompatActivity {
     Toolbar appBar;
@@ -39,7 +40,8 @@ public class ChooseMemoBookActivity extends AppCompatActivity {
     ChooseMemoBookAdapter adapter;
     private PopupWindow window;
     List<MemoBook> data = new ArrayList<>();
-//    List<MemoBook> memoBooks;
+    Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +50,13 @@ public class ChooseMemoBookActivity extends AppCompatActivity {
         appBar = findViewById(R.id.app_bar);
         setSupportActionBar(appBar);
 
+        context = getApplicationContext();
+
         new_notebook_fragment = findViewById(R.id.new_notebook_fragment2);
         back_to_memo_btn = findViewById(R.id.back_to_memo_btn);
         recyclerView = findViewById(R.id.recyclerView2);
 
-        data = DbHelper.retrieveMemoBooks(getApplicationContext());
+        data = DbHelper.retrieveMemoBooks(context);
         adapter = new ChooseMemoBookAdapter(data , this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -116,10 +120,10 @@ public class ChooseMemoBookActivity extends AppCompatActivity {
                             ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
                         } else {
                             //TODO: handle the date
-                            String date = getCurrentDate();
-                            int id = DbHelper.incrementMemoBookId(getApplicationContext());
+                            String date = Helper.getCurrentDate(DATE_FORMAT);
+                            int id = DbHelper.incrementMemoBookId(context);
                             MemoBook memoBook = new MemoBook(id, memobook_name, date);
-                            DbHelper.saveMemoBook( memoBook, getApplicationContext());
+                            DbHelper.saveMemoBook( memoBook, context);
                             Intent intent = new Intent();
                             intent.putExtra(Constants.MEMO_BOOK_ID, id);
                             setResult(Activity.RESULT_OK, intent);
@@ -142,7 +146,7 @@ public class ChooseMemoBookActivity extends AppCompatActivity {
     }
 
     public final boolean isDuplicated(String word){
-        ArrayList<MemoBook> memoBooks = DbHelper.retrieveMemoBooks(getApplicationContext());
+        ArrayList<MemoBook> memoBooks = DbHelper.retrieveMemoBooks(context);
         String memoBookName;
         if(!memoBooks.isEmpty()){
             for (MemoBook memoBook : memoBooks) {
