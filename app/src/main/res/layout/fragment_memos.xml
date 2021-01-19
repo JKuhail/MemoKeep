@@ -40,7 +40,6 @@
         tools:listitem="@layout/starred_memo_item"
         android:clickable="true"
         android:focusable="true"
-        android:paddingStart="12dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:divider="#00000000" />

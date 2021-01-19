@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-//        Helper.hideSoftKeyboard(MainActivity.this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemosFragment()).commit();
         navigationView = findViewById(R.id.space);

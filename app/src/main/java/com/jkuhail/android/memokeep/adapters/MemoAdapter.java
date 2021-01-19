@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
 import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,18 +17,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jkuhail.android.memokeep.activities.CreateMemoActivity;
 import com.jkuhail.android.memokeep.R;
 import com.jkuhail.android.memokeep.helpers.Constants;
-import com.jkuhail.android.memokeep.helpers.DbHelper;
+import com.jkuhail.android.memokeep.interfaces.OnItemDeleted;
 import com.jkuhail.android.memokeep.models.Memo;
-
 import java.util.List;
+
 
 public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.MemoHolder> {
     private List<Memo> data2;
     private Context context;
+    private OnItemDeleted onItemDeleted;
 
-    public MemoAdapter(List<Memo> data2, Context context) {
+    public MemoAdapter(List<Memo> data2, Context context, OnItemDeleted onItemDeleted) {
         this.data2 = data2;
         this.context = context;
+        this.onItemDeleted = onItemDeleted;
     }
 
     @NonNull
@@ -53,12 +57,9 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.MemoHolder> {
             PopupMenu popup = new PopupMenu(context, holder.memo_main_2);
             popup.inflate(R.menu.memo_menu);
             popup.setOnMenuItemClickListener(item -> {
-
                 switch (item.getItemId()){
                     case R.id.delete :
-                        DbHelper.deleteMemo(memo.getId(), context);
-                        data2.remove(position);
-                        notifyItemRemoved(position);
+                        onItemDeleted.onItemDeleted(v, position, memo.getId());
                         return true;
                     case R.id.archive:
 /*                        DbHelper.findMemo(memo.getId(), context).setArchive(true);

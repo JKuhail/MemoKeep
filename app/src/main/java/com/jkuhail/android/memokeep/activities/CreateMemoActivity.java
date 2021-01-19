@@ -68,7 +68,8 @@ public class CreateMemoActivity extends AppCompatActivity {
         memo_book_btn = findViewById(R.id.memo_book_btn);
         star = findViewById(R.id.star);
 
-        memo_content.setAutoLinkMask(Linkify.WEB_URLS);
+
+        memo_content.setAutoLinkMask(Linkify.ALL);
         memo_content.setMovementMethod(LinkMovementMethod.getInstance());
         //If the edit text contains previous text with potential links
         Linkify.addLinks(memo_content, Linkify.ALL);
@@ -82,7 +83,7 @@ public class CreateMemoActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                save_btn.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -90,6 +91,7 @@ public class CreateMemoActivity extends AppCompatActivity {
                 Linkify.addLinks(s, Linkify.ALL);
             }
         });
+
 
         context = getApplicationContext();
 
@@ -115,14 +117,17 @@ public class CreateMemoActivity extends AppCompatActivity {
 
             memoBook = DbHelper.findMemoBook(editedMemo.getMemoBookId(), context);
             memo_book_btn.setText(memoBook.getName());
-
+            save_btn.setVisibility(View.GONE);
             save_btn.setText("Update");
         } else {
             memo_content.requestFocus();
-            Helper.showSoftKeyboard(CreateMemoActivity.this);
+//            Helper.showSoftKeyboard(CreateMemoActivity.this);
         }
 
-        back_btn.setOnClickListener(view -> finish());
+        back_btn.setOnClickListener(view -> {
+            Helper.hideSoftKeyboard(CreateMemoActivity.this);
+            finish();
+        });
 
         memo_book_btn.setOnClickListener(view -> {
             Intent intent = new Intent(context, ChooseMemoBookActivity.class);
@@ -277,6 +282,7 @@ public class CreateMemoActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

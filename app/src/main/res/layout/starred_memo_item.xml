@@ -10,6 +10,7 @@
     app:cardBackgroundColor="@color/colorPrimary"
     app:cardElevation="5dp"
     android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"

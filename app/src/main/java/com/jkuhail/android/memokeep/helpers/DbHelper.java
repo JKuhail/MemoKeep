@@ -90,6 +90,16 @@ public class DbHelper {
                 .findFirst();
     }
 
+    public static boolean starredMemoExist(final int id, final Context context) {
+        Realm.init(context);
+        Realm realm = Realm.getDefaultInstance();
+        Memo memo = realm.where(Memo.class)
+                .equalTo("id", id)
+                .equalTo("importance", true)
+                .findFirst();
+        return memo != null;
+    }
+
     public static int incrementMemoId(Context context) {
         Realm.init(context);
         Realm realm = Realm.getDefaultInstance();

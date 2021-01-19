@@ -52,13 +52,10 @@ public class StarredMemoAdapter extends RecyclerView.Adapter<StarredMemoAdapter.
     public void onBindViewHolder(@NonNull MemoHolder holder, int position) {
 
         if(position == data.size()){
-            holder.starred_memos_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context , CreateMemoActivity.class);
-                    intent.putExtra(Constants.MEMO_IMPORTANCE, true);
-                    context.startActivity(intent);
-                }
+            holder.starred_memos_button.setOnClickListener(v -> {
+                Intent intent = new Intent(context , CreateMemoActivity.class);
+                intent.putExtra(Constants.MEMO_IMPORTANCE, true);
+                context.startActivity(intent);
             });
         } else {
             final Memo memo = data.get(position);
@@ -103,13 +100,10 @@ public class StarredMemoAdapter extends RecyclerView.Adapter<StarredMemoAdapter.
             }
             ;
 
-            holder.memo_main.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context , CreateMemoActivity.class);
-                    intent.putExtra(Constants.MEMO_OBJECT, memo);
-                    context.startActivity(intent);
-                }
+            holder.memo_main.setOnClickListener(view -> {
+                Intent intent = new Intent(context , CreateMemoActivity.class);
+                intent.putExtra(Constants.MEMO_OBJECT, memo);
+                context.startActivity(intent);
             });
         }
     }
