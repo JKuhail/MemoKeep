@@ -1,67 +1,63 @@
-package com.jkuhail.android.memokeep.fragments;
+package com.jkuhail.android.memokeep.fragments
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.jkuhail.android.memokeep.R
+import com.jkuhail.android.memokeep.adapters.MemoAdapter
+import com.jkuhail.android.memokeep.adapters.StarredMemoAdapter
+import com.jkuhail.android.memokeep.helpers.DbHelper.deleteMemo
+import com.jkuhail.android.memokeep.helpers.DbHelper.retrieveMemos
+import com.jkuhail.android.memokeep.helpers.DbHelper.retrieveStarredMemos
+import com.jkuhail.android.memokeep.interfaces.OnItemDeleted
+import com.jkuhail.android.memokeep.models.Memo
+import java.util.*
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+class MemosFragment : Fragment() {
+    private lateinit var viewStarredMemos: RecyclerView
+    private lateinit var viewMemos: RecyclerView
+    private var adapter: StarredMemoAdapter? = null
+    var adapter2: MemoAdapter? = null
+    private var data = ArrayList<Memo>()
+    var data2 = ArrayList<Memo>()
+    private var layoutManager: LinearLayoutManager? = null
 
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.jkuhail.android.memokeep.R;
-import com.jkuhail.android.memokeep.adapters.MemoAdapter;
-import com.jkuhail.android.memokeep.adapters.StarredMemoAdapter;
-import com.jkuhail.android.memokeep.helpers.DbHelper;
-import com.jkuhail.android.memokeep.models.Memo;
-
-import java.util.ArrayList;
-
-public class MemosFragment extends Fragment {
-    RecyclerView recyclerView_starred_memos, recyclerView_memos;
-    StarredMemoAdapter adapter;
-    MemoAdapter adapter2;
-    ArrayList<Memo> data = new ArrayList<>();
-    ArrayList<Memo> data2 = new ArrayList<>();
-    LinearLayoutManager layoutManager;
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
 
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_memos, container, false);
+        val root = inflater.inflate(R.layout.fragment_memos, container, false)
 
-        recyclerView_starred_memos = root.findViewById(R.id.recyclerView_starred_memos);
-        data = DbHelper.retrieveStarredMemos(getContext());
-        adapter = new StarredMemoAdapter(data, getContext());
-        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView_starred_memos.setLayoutManager(layoutManager);
-        recyclerView_starred_memos.setAdapter(adapter);
+        viewStarredMemos = root.findViewById(R.id.recyclerView_starred_memos)
+        data = retrieveStarredMemos(requireContext())
+        adapter = StarredMemoAdapter(data, context)
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        viewStarredMemos.layoutManager = layoutManager
+        viewStarredMemos.adapter = adapter
 
-
-        recyclerView_memos = root.findViewById(R.id.recyclerView_memos);
-        data2 = DbHelper.retrieveMemos(getContext());
-        adapter2 = new MemoAdapter(data2, getContext(), (v, position, id)-> {
-            DbHelper.deleteMemo(id, getContext());
-            data2.remove(position);
-            adapter2.notifyItemRemoved(position);
-
-            updateStarredMemos();
-        });
-        recyclerView_memos.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView_memos.setAdapter(adapter2);
-        recyclerView_memos.setNestedScrollingEnabled(false);
-
-        return root;
+        viewMemos = root.findViewById(R.id.recyclerView_memos)
+        data2 = retrieveMemos(requireContext())
+        adapter2 = MemoAdapter(data2, context, object : OnItemDeleted {
+            override fun onItemDeleted(v: View?, position: Int, id: Int) {
+                deleteMemo(id, context!!)
+                data2.removeAt(position)
+                adapter2!!.notifyItemRemoved(position)
+                updateStarredMemos()
+            }
+        })
+        viewMemos.layoutManager = LinearLayoutManager(context)
+        viewMemos.adapter = adapter2
+        viewMemos.isNestedScrollingEnabled = false
+        return root
     }
 
-    private void updateStarredMemos(){
-        data = DbHelper.retrieveStarredMemos(getContext());
-        adapter = new StarredMemoAdapter(data, getContext());
-        recyclerView_starred_memos.setAdapter(adapter);
+    private fun updateStarredMemos() {
+        data = retrieveStarredMemos(requireContext())
+        adapter = StarredMemoAdapter(data, context)
+        viewStarredMemos.adapter = adapter
     }
 }
