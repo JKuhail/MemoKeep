@@ -34,14 +34,14 @@ class MemosFragment : Fragment() {
 
         viewStarredMemos = root.findViewById(R.id.recyclerView_starred_memos)
         data = retrieveStarredMemos(requireContext())
-        adapter = StarredMemoAdapter(data, context)
+        adapter = StarredMemoAdapter(data, requireContext())
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         viewStarredMemos.layoutManager = layoutManager
         viewStarredMemos.adapter = adapter
 
         viewMemos = root.findViewById(R.id.recyclerView_memos)
         data2 = retrieveMemos(requireContext())
-        adapter2 = MemoAdapter(data2, context, object : OnItemDeleted {
+        adapter2 = MemoAdapter(data2, requireContext(), object : OnItemDeleted {
             override fun onItemDeleted(v: View?, position: Int, id: Int) {
                 deleteMemo(id, context!!)
                 data2.removeAt(position)
@@ -57,7 +57,7 @@ class MemosFragment : Fragment() {
 
     private fun updateStarredMemos() {
         data = retrieveStarredMemos(requireContext())
-        adapter = StarredMemoAdapter(data, context)
+        adapter = StarredMemoAdapter(data, requireContext())
         viewStarredMemos.adapter = adapter
     }
 }

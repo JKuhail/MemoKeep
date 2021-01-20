@@ -14,12 +14,13 @@ import com.jkuhail.android.memokeep.adapters.MemoBookAdapter
 import com.jkuhail.android.memokeep.helpers.DbHelper.retrieveMemoBooks
 import com.jkuhail.android.memokeep.models.MemoBook
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MemoBooksFragment : Fragment() {
     private lateinit var newNotebook: Button
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: MemoBookAdapter
-    private var data: List<MemoBook> = ArrayList()
+    private var data: ArrayList<MemoBook> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -29,7 +30,7 @@ class MemoBooksFragment : Fragment() {
 
         recyclerView = root.findViewById(R.id.recyclerView)
         data = retrieveMemoBooks(requireContext())
-        adapter = MemoBookAdapter(data, context)
+        adapter = MemoBookAdapter(data, requireContext())
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         recyclerView.isNestedScrollingEnabled = false

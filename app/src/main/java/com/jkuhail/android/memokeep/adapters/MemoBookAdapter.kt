@@ -1,97 +1,71 @@
-package com.jkuhail.android.memokeep.adapters;
+package com.jkuhail.android.memokeep.adapters
 
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.Context
+import android.content.Intent
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+import com.jkuhail.android.memokeep.R
+import com.jkuhail.android.memokeep.activities.MemoBookActivity
+import com.jkuhail.android.memokeep.helpers.Constants
+import com.jkuhail.android.memokeep.helpers.DbHelper.deleteMemoBook
+import com.jkuhail.android.memokeep.helpers.DbHelper.deleteMemos
+import com.jkuhail.android.memokeep.models.MemoBook
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+class MemoBookAdapter(private val data: MutableList<MemoBook>,
+                              private val context: Context)
+    : RecyclerView.Adapter<MemoBookAdapter.NotebookHolder>() {
 
-import com.jkuhail.android.memokeep.R;
-import com.jkuhail.android.memokeep.activities.CreateMemoActivity;
-import com.jkuhail.android.memokeep.activities.MemoBookActivity;
-import com.jkuhail.android.memokeep.helpers.Constants;
-import com.jkuhail.android.memokeep.helpers.DbHelper;
-import com.jkuhail.android.memokeep.models.MemoBook;
-
-import java.util.List;
-
-public class MemoBookAdapter extends RecyclerView.Adapter<MemoBookAdapter.NotebookHolder> {
-    private List<MemoBook> data;
-    private Context context;
-
-    public MemoBookAdapter(List<MemoBook> data, Context context) {
-        this.data = data;
-        this.context = context;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotebookHolder {
+        val root = LayoutInflater.from(parent.context).inflate(R.layout.memo_book_item, parent, false)
+        return NotebookHolder(root)
     }
 
+    override fun onBindViewHolder(holder: NotebookHolder, position: Int) {
+        val memoBook = data[position]
+        holder.notebookName.text = memoBook.name
+        holder.notebookDate.text = memoBook.date
 
-    @NonNull
-    @Override
-    public NotebookHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.memo_book_item, parent , false);
-        return new NotebookHolder(root);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull NotebookHolder holder, int position) {
-        final MemoBook memoBook = data.get(position);
-        holder.notebook_name.setText(memoBook.getName());
-        holder.notebook_date.setText(memoBook.getDate());
-        holder.notebook_main.setOnClickListener(view -> {
-            Intent intent = new Intent(context , MemoBookActivity.class);
-            intent.putExtra(Constants.MEMO_BOOK_ID, memoBook.getId());
-            context.startActivity(intent);
-        });
-        holder.notebook_main.setOnLongClickListener(v -> {
-            PopupMenu popup = new PopupMenu(context, holder.notebook_main);
-            popup.inflate(R.menu.memo_book_menu);
-            popup.setOnMenuItemClickListener(item -> {
-
-                switch (item.getItemId()){
-                    case R.id.delete :
-                        int memoBookId = memoBook.getId();
-                        DbHelper.deleteMemoBook(memoBookId, context);
-                        DbHelper.deleteMemos(memoBookId, context);
-                        data.remove(position);
-                        notifyItemRemoved(position);
-                        return true;
-                    default:
-                        return false;
-                }
-            });
-            popup.show();
-            return true;
-        });
-
-    }
-
-
-    @Override
-    public int getItemCount() {
-        return data.size();
-    }
-
-    static class NotebookHolder extends RecyclerView.ViewHolder{
-
-        TextView notebook_name;
-        TextView notebook_date;
-        CardView notebook_main;
-
-        NotebookHolder(@NonNull View itemView){
-            super(itemView);
-            notebook_name =itemView.findViewById(R.id.notebook_name);
-            notebook_date = itemView.findViewById(R.id.notebook_date);
-            notebook_main = itemView.findViewById(R.id.notebook_main);
-
+        holder.notebookMain.setOnClickListener {
+            val intent = Intent(context, MemoBookActivity::class.java)
+            intent.putExtra(Constants.MEMO_BOOK_ID, memoBook.id)
+            context.startActivity(intent)
         }
 
+        holder.notebookMain.setOnLongClickListener {
+            val popup = PopupMenu(context, holder.notebookMain)
+            popup.inflate(R.menu.memo_book_menu)
+            popup.setOnMenuItemClickListener { item: MenuItem ->
+                when (item.itemId) {
+                    R.id.delete -> {
+                        val memoBookId = memoBook.id
+                        deleteMemoBook(memoBookId, context)
+                        deleteMemos(memoBookId, context)
+                        data.removeAt(position)
+                        notifyItemRemoved(position)
+                        return@setOnMenuItemClickListener true
+                    }
+                    else -> return@setOnMenuItemClickListener false
+                }
+            }
+            popup.show()
+            true
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+    class NotebookHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var notebookName: TextView = itemView.findViewById(R.id.notebook_name)
+        var notebookDate: TextView = itemView.findViewById(R.id.notebook_date)
+        var notebookMain: CardView = itemView.findViewById(R.id.notebook_main)
 
     }
 }

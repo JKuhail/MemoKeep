@@ -31,7 +31,6 @@ import com.jkuhail.android.memokeep.models.MemoBook;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jkuhail.android.memokeep.activities.MainActivity.DATE_FORMAT;
 
 public class ChooseMemoBookActivity extends AppCompatActivity {
     Toolbar appBar;
@@ -42,7 +41,8 @@ public class ChooseMemoBookActivity extends AppCompatActivity {
     List<MemoBook> data = new ArrayList<>();
     Context context;
 
-
+    public static final String DATE_FORMAT = "MMM dd, yyyy";
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,21 +63,13 @@ public class ChooseMemoBookActivity extends AppCompatActivity {
 
 //        memoBooks = MemoBook.listAll(MemoBook.class);
 
-        new_notebook_fragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //this is how we call a class activity in a fragment ;)
-                ShowSecondPopupWindow();
+        new_notebook_fragment.setOnClickListener(view -> {
+            //this is how we call a class activity in a fragment ;)
+            ShowSecondPopupWindow();
 
-            }
         });
 
-        back_to_memo_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        back_to_memo_btn.setOnClickListener(view -> finish());
 
     }
 
@@ -104,34 +96,30 @@ public class ChooseMemoBookActivity extends AppCompatActivity {
             ok = layout.findViewById(R.id.ok);
             error_message = layout.findViewById(R.id.error_message);
 
-            ok.setOnClickListener(new View.OnClickListener() {
+            ok.setOnClickListener(v -> {
+                String memobook_name = ed_new_notebook.getText().toString().trim();
 
-                @Override
-                public void onClick(View v) {
-                    String memobook_name = ed_new_notebook.getText().toString().trim();
-
-                        if (ed_new_notebook.length() == 0) {
-                            error_message.setVisibility(View.VISIBLE);
-                            error_message.setText("Please enter a name!");
-                            ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                        }else if(isDuplicated(memobook_name)){
-                            error_message.setVisibility(View.VISIBLE);
-                            error_message.setText("This Memo book is already exists!");
-                            ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                        } else {
-                            //TODO: handle the date
-                            String date = Helper.getCurrentDate(DATE_FORMAT);
-                            int id = DbHelper.incrementMemoBookId(context);
-                            MemoBook memoBook = new MemoBook(id, memobook_name, date);
-                            DbHelper.saveMemoBook( memoBook, context);
-                            Intent intent = new Intent();
-                            intent.putExtra(Constants.MEMO_BOOK_ID, id);
-                            setResult(Activity.RESULT_OK, intent);
-                            window.dismiss();
-                            finish();
-                        }
+                    if (ed_new_notebook.length() == 0) {
+                        error_message.setVisibility(View.VISIBLE);
+                        error_message.setText("Please enter a name!");
+                        ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
+                    }else if(isDuplicated(memobook_name)){
+                        error_message.setVisibility(View.VISIBLE);
+                        error_message.setText("This Memo book is already exists!");
+                        ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
+                    } else {
+                        //TODO: handle the date
+                        String date = Helper.getCurrentDate(DATE_FORMAT);
+                        int id = DbHelper.incrementMemoBookId(context);
+                        MemoBook memoBook = new MemoBook(id, memobook_name, date);
+                        DbHelper.saveMemoBook( memoBook, context);
+                        Intent intent = new Intent();
+                        intent.putExtra(Constants.MEMO_BOOK_ID, id);
+                        setResult(Activity.RESULT_OK, intent);
+                        window.dismiss();
+                        finish();
                     }
-            });
+                });
             layout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
