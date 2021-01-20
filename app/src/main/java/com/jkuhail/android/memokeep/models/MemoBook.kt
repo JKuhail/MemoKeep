@@ -1,79 +1,35 @@
-package com.jkuhail.android.memokeep.models;
+package com.jkuhail.android.memokeep.models
 
+import android.os.Parcel
+import android.os.Parcelable
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
-public class MemoBook extends RealmObject implements Parcelable {
-
+open class MemoBook (
     @PrimaryKey
-    private int id;
-    private String name , date;
-
-    public MemoBook(int id, String name, String date) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-    }
-
-    public MemoBook() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeString(this.name);
-        dest.writeString(this.date);
-    }
-
-    protected MemoBook(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.date = in.readString();
-    }
-
-    public static final Parcelable.Creator<MemoBook> CREATOR = new Parcelable.Creator<MemoBook>() {
-        @Override
-        public MemoBook createFromParcel(Parcel source) {
-            return new MemoBook(source);
+    var id: Int = 0,
+    var name: String? = null,
+    var date: String? = null,
+) : RealmObject(), Parcelable {
+    companion object {
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<MemoBook> {
+            override fun createFromParcel(parcel: Parcel) = MemoBook(parcel)
+            override fun newArray(size: Int) = arrayOfNulls<MemoBook>(size)
         }
+    }
 
-        @Override
-        public MemoBook[] newArray(int size) {
-            return new MemoBook[size];
-        }
-    };
+    private constructor(parcel: Parcel) : this(
+            id = parcel.readInt(),
+            name = parcel.readString(),
+            date = parcel.readString(),
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
+        parcel.writeString(name)
+        parcel.writeString(date)
+    }
+
+    override fun describeContents() = 0
 }

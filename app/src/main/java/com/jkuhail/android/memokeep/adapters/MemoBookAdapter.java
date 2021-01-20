@@ -1,6 +1,7 @@
 package com.jkuhail.android.memokeep.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jkuhail.android.memokeep.R;
+import com.jkuhail.android.memokeep.activities.CreateMemoActivity;
+import com.jkuhail.android.memokeep.activities.MemoBookActivity;
+import com.jkuhail.android.memokeep.helpers.Constants;
 import com.jkuhail.android.memokeep.helpers.DbHelper;
 import com.jkuhail.android.memokeep.models.MemoBook;
 
@@ -41,8 +45,9 @@ public class MemoBookAdapter extends RecyclerView.Adapter<MemoBookAdapter.Notebo
         holder.notebook_name.setText(memoBook.getName());
         holder.notebook_date.setText(memoBook.getDate());
         holder.notebook_main.setOnClickListener(view -> {
-            //TODO: change this!
-            Toast.makeText(context, "item clicked! the Id is: " + memoBook.getId(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context , MemoBookActivity.class);
+            intent.putExtra(Constants.MEMO_BOOK_ID, memoBook.getId());
+            context.startActivity(intent);
         });
         holder.notebook_main.setOnLongClickListener(v -> {
             PopupMenu popup = new PopupMenu(context, holder.notebook_main);

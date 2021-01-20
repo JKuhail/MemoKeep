@@ -9,9 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.MemoBookActivity"></activity>
         <activity android:name=".activities.ChooseMemoBookActivity" />
         <activity android:name=".activities.ArchiveActivity" />
-        <activity android:name=".activities.CreateMemoActivity"
+        <activity
+            android:name=".activities.CreateMemoActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activities.MainActivity"
@@ -23,7 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

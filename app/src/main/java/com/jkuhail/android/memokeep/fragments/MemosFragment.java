@@ -28,7 +28,6 @@ public class MemosFragment extends Fragment {
     LinearLayoutManager layoutManager;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

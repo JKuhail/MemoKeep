@@ -1,140 +1,77 @@
-package com.jkuhail.android.memokeep.models;
+package com.jkuhail.android.memokeep.models
 
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.view.View;
+import android.os.Build
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.annotation.RequiresApi
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
-public class Memo extends RealmObject implements Parcelable {
-
+open class Memo (
     @PrimaryKey
-    private int id;
-    private int memoBookId;
-    private String title , content , date;
-    private boolean importance, archive;
-    private int color;
+    var id: Int = 0,
+    var title: String? = null,
 
-    public Memo(int id, String title, String content, String date, int memoBookId, boolean importance, boolean archive, int color) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.date = date;
-        this.memoBookId = memoBookId;
-        this.importance = importance;
-        this.archive = archive;
-        this.color = color;
-    }
+    var content: String? = null,
+    var date: String? = null,
+    var memoBookId: Int = 0,
+    var isImportance: Boolean = false,
+    var isArchive: Boolean = false,
+    var color: Int = 0,
 
-    public Memo() {
-    }
+) : RealmObject(), Parcelable {
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public boolean isImportance() {
-        return importance;
-    }
-
-    public void setImportance(boolean importance) {
-        this.importance = importance;
-    }
-
-    public boolean isArchive() {
-        return archive;
-    }
-
-    public void setArchive(boolean archive) {
-        this.archive = archive;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public int getMemoBookId() {
-        return memoBookId;
-    }
-
-    public void setMemoBookId(int memoBookId) {
-        this.memoBookId = memoBookId;
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeString(this.title);
-        dest.writeString(this.content);
-        dest.writeString(this.date);
-        dest.writeInt(this.memoBookId);
-        dest.writeByte(this.importance ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.archive ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.color);
-    }
-
-    protected Memo(Parcel in) {
-        this.id = in.readInt();
-        this.title = in.readString();
-        this.content = in.readString();
-        this.date = in.readString();
-        this.memoBookId = in.readInt();
-        this.importance = in.readByte() != 0;
-        this.archive = in.readByte() != 0;
-        this.color = in.readInt();
-    }
-
-    public static final Parcelable.Creator<Memo> CREATOR = new Parcelable.Creator<Memo>() {
-        @Override
-        public Memo createFromParcel(Parcel source) {
-            return new Memo(source);
+    companion object {
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<Memo> {
+            override fun createFromParcel(parcel: Parcel) = Memo(parcel)
+            override fun newArray(size: Int) = arrayOfNulls<Memo>(size)
         }
 
-        @Override
-        public Memo[] newArray(int size) {
-            return new Memo[size];
+        /**
+         * The next two functions enable boolean parcelable without restrict the used api
+         * (`writeBoolean & readBoolean` required minimum api 29)
+         */
+        fun Parcel.writeBolean(flag: Boolean) {
+            when(flag) {
+                true -> writeInt(1)
+                false -> writeInt(0)
+            }
         }
-    };
+
+        fun Parcel.readBolean(): Boolean {
+            return when(readInt()) {
+                1 -> true
+                else -> false
+            }
+        }
+    }
+
+    private constructor(parcel: Parcel) : this(
+            id = parcel.readInt(),
+            memoBookId = parcel.readInt(),
+            title = parcel.readString(),
+            content = parcel.readString(),
+            date = parcel.readString(),
+            isImportance = parcel.readBolean(),
+            isArchive = parcel.readBolean(),
+            color = parcel.readInt(),
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
+        parcel.writeInt(memoBookId)
+        parcel.writeString(title)
+        parcel.writeString(content)
+        parcel.writeString(date)
+        parcel.writeBolean(isImportance)
+        parcel.writeBolean(isArchive)
+        parcel.writeInt(color)
+    }
+
+    override fun describeContents() = 0
 
 
 }

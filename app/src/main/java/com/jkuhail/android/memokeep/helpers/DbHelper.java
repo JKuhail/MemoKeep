@@ -61,7 +61,22 @@ public class DbHelper {
         realm.executeTransaction(realm1 -> {
             RealmResults<Memo> memos = realm1.where(Memo.class)
                     .sort("id", Sort.DESCENDING)
-                    .equalTo("archive", false)
+                    .equalTo("isArchive", false)
+                    .findAll();
+            result.addAll(memos);
+        });
+        return result;
+    }
+
+    public static ArrayList<Memo> retrieveMemoBookMemos(Context context, int id) {
+        ArrayList<Memo> result = new ArrayList<>();
+        Realm.init(context);
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            RealmResults<Memo> memos = realm1.where(Memo.class)
+                    .sort("id", Sort.DESCENDING)
+                    .equalTo("isArchive", false)
+                    .equalTo("memoBookId", id)
                     .findAll();
             result.addAll(memos);
         });
@@ -74,7 +89,7 @@ public class DbHelper {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
             RealmResults<Memo> memos = realm1.where(Memo.class)
-                    .equalTo("importance", true)
+                    .equalTo("isImportance", true)
                     .sort("id", Sort.DESCENDING)
                     .findAll();
             result.addAll(memos);
@@ -95,7 +110,7 @@ public class DbHelper {
         Realm realm = Realm.getDefaultInstance();
         Memo memo = realm.where(Memo.class)
                 .equalTo("id", id)
-                .equalTo("importance", true)
+                .equalTo("isImportance", true)
                 .findFirst();
         return memo != null;
     }

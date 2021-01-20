@@ -50,6 +50,7 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.MemoHolder> {
         holder.memo_main_2.setOnClickListener(view -> {
             Intent intent = new Intent(context , CreateMemoActivity.class);
             intent.putExtra(Constants.MEMO_OBJECT, memo);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
 
