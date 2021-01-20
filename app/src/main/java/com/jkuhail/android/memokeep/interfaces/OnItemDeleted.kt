@@ -1,7 +1,7 @@
-package com.jkuhail.android.memokeep.interfaces;
+package com.jkuhail.android.memokeep.interfaces
 
-import android.view.View;
+import android.view.View
 
-public interface OnItemDeleted {
-    void onItemDeleted(View v, int position, int id);
+interface OnItemDeleted {
+    fun onItemDeleted(v: View?, position: Int, id: Int)
 }
