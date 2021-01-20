@@ -1,300 +1,233 @@
-package com.jkuhail.android.memokeep.activities;
+package com.jkuhail.android.memokeep.activities
 
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import com.jkuhail.android.memokeep.R
+import com.jkuhail.android.memokeep.helpers.Constants
+import com.jkuhail.android.memokeep.helpers.DbHelper.findMemoBook
+import com.jkuhail.android.memokeep.helpers.DbHelper.incrementMemoId
+import com.jkuhail.android.memokeep.helpers.DbHelper.saveMemo
+import com.jkuhail.android.memokeep.helpers.Helper.getCurrentDate
+import com.jkuhail.android.memokeep.helpers.Helper.hideSoftKeyboard
+import com.jkuhail.android.memokeep.models.Memo
+import com.jkuhail.android.memokeep.models.MemoBook
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+class CreateMemoActivity : AppCompatActivity() {
+    private lateinit var backBtn: Button
+    private lateinit var saveBtn: Button
+    private lateinit var etMemoTitle: EditText
+    private lateinit var etMemoContent: EditText
+    private lateinit var memoBookBtn: TextView
+    private lateinit var colorPicker: ImageView
+    private lateinit var star: ImageView
+    private lateinit var window: PopupWindow
+    private lateinit var memoTitle: String
+    private lateinit var memoContent: String
+    private lateinit var memoDate: String
+    private var memoBookId = 0
+    private var memoBook: MemoBook? = null
+    private var editedMemo: Memo? = null
+    private var memoImportance = false
+    private var memoColor = 0
+    private lateinit var context: Context
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_create_memo)
+        backBtn = findViewById(R.id.back_btn)
+        saveBtn = findViewById(R.id.save_btn)
+        etMemoTitle = findViewById(R.id.memo_title)
+        etMemoContent = findViewById(R.id.memo_content)
+        colorPicker = findViewById(R.id.color_picker)
+        memoBookBtn = findViewById(R.id.memo_book_btn)
+        star = findViewById(R.id.star)
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.jkuhail.android.memokeep.R;
-import com.jkuhail.android.memokeep.helpers.Constants;
-import com.jkuhail.android.memokeep.helpers.DbHelper;
-import com.jkuhail.android.memokeep.helpers.Helper;
-import com.jkuhail.android.memokeep.models.Memo;
-import com.jkuhail.android.memokeep.models.MemoBook;
-
-
-
-public class CreateMemoActivity extends AppCompatActivity {
-    private Button back_btn, save_btn;
-    private EditText memo_title, memo_content;
-    private TextView memo_book_btn;
-    private ImageView color_picker, star;
-    private PopupWindow window;
-    private String memoTitle, memoContent, memoDate;
-    private int memoBookId;
-    private MemoBook memoBook;
-    private Memo editedMemo;
-    private boolean memoImportance;
-    private int memoColor;
-    public static final String DATE_FORMAT = "MMM dd, yyyy";
-    private Context context;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_memo);
-
-        back_btn = findViewById(R.id.back_btn);
-        save_btn = findViewById(R.id.save_btn);
-        memo_title = findViewById(R.id.memo_title);
-        memo_content = findViewById(R.id.memo_content);
-        color_picker = findViewById(R.id.color_picker);
-        memo_book_btn = findViewById(R.id.memo_book_btn);
-        star = findViewById(R.id.star);
-
-
-        memo_content.setAutoLinkMask(Linkify.ALL);
-        memo_content.setMovementMethod(LinkMovementMethod.getInstance());
+        etMemoContent.autoLinkMask = Linkify.ALL
+        etMemoContent.movementMethod = LinkMovementMethod.getInstance()
         //If the edit text contains previous text with potential links
-        Linkify.addLinks(memo_content, Linkify.ALL);
+        Linkify.addLinks(etMemoContent, Linkify.ALL)
+        etMemoContent.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
-
-        memo_content.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                saveBtn.visibility = View.VISIBLE
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                save_btn.setVisibility(View.VISIBLE);
+            override fun afterTextChanged(s: Editable) {
+                Linkify.addLinks(s, Linkify.ALL)
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Linkify.addLinks(s, Linkify.ALL);
-            }
-        });
-
-
-        context = getApplicationContext();
-
-
-        memoImportance = getIntent().getBooleanExtra(Constants.MEMO_IMPORTANCE, memoImportance);
-
-        try {
-            editedMemo = getIntent().getExtras().getParcelable(Constants.MEMO_OBJECT);
-        } catch (Exception e) {
-            editedMemo = null;
+        })
+        context = applicationContext
+        memoImportance = intent.getBooleanExtra(Constants.MEMO_IMPORTANCE, memoImportance)
+        editedMemo = try {
+            intent.extras!!.getParcelable(Constants.MEMO_OBJECT)
+        } catch (e: Exception) {
+            null
         }
 
 
         //Editing mode
         if (editedMemo != null) {
-            memo_title.setText(editedMemo.getTitle());
-
-            memo_content.setText(editedMemo.getContent());
-
-            memoColor = editedMemo.getColor();
-
-            memoImportance = editedMemo.isImportance();
-
-            memoBook = DbHelper.findMemoBook(editedMemo.getMemoBookId(), context);
-            memo_book_btn.setText(memoBook.getName());
-            save_btn.setVisibility(View.GONE);
-            save_btn.setText("Update");
+            etMemoTitle.setText(editedMemo!!.title)
+            etMemoContent.setText(editedMemo!!.content)
+            memoColor = editedMemo!!.color
+            memoImportance = editedMemo!!.isImportance
+            memoBook = findMemoBook(editedMemo!!.memoBookId, context)
+            memoBookBtn.text = memoBook!!.name
+            saveBtn.visibility = View.GONE
+            saveBtn.text = "Update"
         } else {
-            memo_content.requestFocus();
-//            Helper.showSoftKeyboard(CreateMemoActivity.this);
+            etMemoContent.requestFocus()
+            //            Helper.showSoftKeyboard(CreateMemoActivity.this);
         }
-
-        back_btn.setOnClickListener(view -> {
-            Helper.hideSoftKeyboard(CreateMemoActivity.this);
-            finish();
-        });
-
-        memo_book_btn.setOnClickListener(view -> {
-            Intent intent = new Intent(context, ChooseMemoBookActivity.class);
-            startActivityForResult(intent, 2);
-        });
-
-        color_picker.setOnClickListener(view -> ShowThirdPopupWindow());
-
-        if (memoImportance)
-            star.setImageResource(R.drawable.ic_star_light);
-
-
-        star.setOnClickListener(view -> {
-            if (!memoImportance) {
-                star.setImageResource(R.drawable.ic_star_light);
-                memoImportance = true;
+        backBtn.setOnClickListener(View.OnClickListener {
+            hideSoftKeyboard(this@CreateMemoActivity)
+            finish()
+        })
+        memoBookBtn.setOnClickListener(View.OnClickListener {
+            val intent = Intent(context, ChooseMemoBookActivity::class.java)
+            startActivityForResult(intent, 2)
+        })
+        colorPicker.setOnClickListener(View.OnClickListener { showThirdPopupWindow() })
+        if (memoImportance) star.setImageResource(R.drawable.ic_star_light)
+        star.setOnClickListener(View.OnClickListener {
+            memoImportance = if (!memoImportance) {
+                star.setImageResource(R.drawable.ic_star_light)
+                true
             } else {
-                star.setImageResource(R.drawable.ic_star_dark);
-                memoImportance = false;
+                star.setImageResource(R.drawable.ic_star_dark)
+                false
             }
-        });
-
-        switch (memoColor) {
-            case 1:
-                color_picker.getBackground().setColorFilter(Color.parseColor("#D32727"), PorterDuff.Mode.SRC_ATOP);
-                break;
-            case 3:
-                color_picker.getBackground().setColorFilter(Color.parseColor("#EF8E0B"), PorterDuff.Mode.SRC_ATOP);
-                break;
-            case 4:
-                color_picker.getBackground().setColorFilter(Color.parseColor("#03A8C4"), PorterDuff.Mode.SRC_ATOP);
-                break;
-            case 5:
-                color_picker.getBackground().setColorFilter(Color.parseColor("#516F55"), PorterDuff.Mode.SRC_ATOP);
-                break;
-            case 6:
-                color_picker.getBackground().setColorFilter(Color.parseColor("#842c72"), PorterDuff.Mode.SRC_ATOP);
-                break;
-            default:
-                color_picker.getBackground().setColorFilter(Color.parseColor("#737373"), PorterDuff.Mode.SRC_ATOP);
-                break;
+        })
+        when (memoColor) {
+            1 -> colorPicker.background.setColorFilter(Color.parseColor("#D32727"), PorterDuff.Mode.SRC_ATOP)
+            3 -> colorPicker.background.setColorFilter(Color.parseColor("#EF8E0B"), PorterDuff.Mode.SRC_ATOP)
+            4 -> colorPicker.background.setColorFilter(Color.parseColor("#03A8C4"), PorterDuff.Mode.SRC_ATOP)
+            5 -> colorPicker.background.setColorFilter(Color.parseColor("#516F55"), PorterDuff.Mode.SRC_ATOP)
+            6 -> colorPicker.background.setColorFilter(Color.parseColor("#842c72"), PorterDuff.Mode.SRC_ATOP)
+            else -> colorPicker.background.setColorFilter(Color.parseColor("#737373"), PorterDuff.Mode.SRC_ATOP)
         }
-
-        save_btn.setOnClickListener(view -> {
-            memoTitle = memo_title.getText().toString().trim();
-            memoContent = memo_content.getText().toString().trim();
-
-            memoDate = Helper.getCurrentDate(DATE_FORMAT);
-
-            if (memo_title.length() == 0 && memo_content.length() == 0) {
-                Toast.makeText(CreateMemoActivity.this, "No content to save. Memo discarded.", Toast.LENGTH_LONG).show();
+        saveBtn.setOnClickListener {
+            memoTitle = etMemoTitle.text.toString().trim { it <= ' ' }
+            memoContent = etMemoContent.text.toString().trim { it <= ' ' }
+            memoDate = getCurrentDate(DATE_FORMAT)
+            if (etMemoTitle.length() == 0 && etMemoContent.length() == 0) {
+                Toast.makeText(this@CreateMemoActivity, "No content to save. Memo discarded.", Toast.LENGTH_LONG).show()
             } else {
                 if (editedMemo == null) {
-                    int memoId = DbHelper.incrementMemoId(context);
-                    Memo memo = new Memo(memoId, memoTitle, memoContent, memoDate, memoBookId, memoImportance, false, memoColor);
-                    DbHelper.saveMemo(memo, context);
-                    Toast.makeText(CreateMemoActivity.this, "Memo saved.", Toast.LENGTH_LONG).show();
+                    val memoId = incrementMemoId(context)
+                    val memo = Memo(memoId, memoTitle, memoContent, memoDate, memoBookId, memoImportance, false, memoColor)
+                    saveMemo(memo, context)
+                    Toast.makeText(this@CreateMemoActivity, "Memo saved.", Toast.LENGTH_LONG).show()
                 } else {
-                    editedMemo.setTitle(memoTitle);
-                    editedMemo.setContent(memoContent);
-                    editedMemo.setMemoBookId(memoBookId);
-                    editedMemo.setImportance(memoImportance);
-                    editedMemo.setColor(memoColor);
-                    editedMemo.setDate(memoDate);
-                    DbHelper.saveMemo(editedMemo, context);
-                    Toast.makeText(CreateMemoActivity.this, "Memo updated.", Toast.LENGTH_LONG).show();
+                    editedMemo!!.title = memoTitle
+                    editedMemo!!.content = memoContent
+                    editedMemo!!.memoBookId = memoBookId
+                    editedMemo!!.isImportance = memoImportance
+                    editedMemo!!.color = memoColor
+                    editedMemo!!.date = memoDate
+                    saveMemo(editedMemo!!, context)
+                    Toast.makeText(this@CreateMemoActivity, "Memo updated.", Toast.LENGTH_LONG).show()
                 }
             }
-            Helper.hideSoftKeyboard(CreateMemoActivity.this);
-            Intent intent = new Intent(CreateMemoActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
-
+            hideSoftKeyboard(this@CreateMemoActivity)
+            val intent = Intent(this@CreateMemoActivity, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
-    public void ShowThirdPopupWindow() {
+    private fun showThirdPopupWindow() {
         try {
-            final CardView color1, color3, color4, color5, color6;
-            final Button btn_default;
-
-            Helper.hideSoftKeyboard(CreateMemoActivity.this);
-
-            LayoutInflater inflater = (LayoutInflater) CreateMemoActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.color_picker_popup_window, null);
-
-            int width = LinearLayout.LayoutParams.MATCH_PARENT;
-            int height = LinearLayout.LayoutParams.MATCH_PARENT;
-
-            window = new PopupWindow(layout, width, height, true);
-
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            window.setOutsideTouchable(true);
-            window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-            color1 = layout.findViewById(R.id.memo_color_1);
-            color3 = layout.findViewById(R.id.memo_color_3);
-            color4 = layout.findViewById(R.id.memo_color_4);
-            color5 = layout.findViewById(R.id.memo_color_5);
-            color6 = layout.findViewById(R.id.memo_color_6);
-            btn_default = layout.findViewById(R.id.btn_default);
-
-
-            color1.setOnClickListener(view -> {
-                memoColor = 1;
-                color_picker.getBackground().setColorFilter(Color.parseColor("#D32727"), PorterDuff.Mode.SRC_ATOP);
-                window.dismiss();
-            });
-
-            color3.setOnClickListener(view -> {
-                memoColor = 3;
-                color_picker.getBackground().setColorFilter(Color.parseColor("#EF8E0B"), PorterDuff.Mode.SRC_ATOP);
-                window.dismiss();
-            });
-            color4.setOnClickListener(view -> {
-                memoColor = 4;
-                color_picker.getBackground().setColorFilter(Color.parseColor("#03A8C4"), PorterDuff.Mode.SRC_ATOP);
-                window.dismiss();
-            });
-            color5.setOnClickListener(view -> {
-                memoColor = 5;
-                color_picker.getBackground().setColorFilter(Color.parseColor("#516F55"), PorterDuff.Mode.SRC_ATOP);
-                window.dismiss();
-            });
-            color6.setOnClickListener(view -> {
-                memoColor = 6;
-                color_picker.getBackground().setColorFilter(Color.parseColor("#842c72"), PorterDuff.Mode.SRC_ATOP);
-                window.dismiss();
-            });
-
-
-            btn_default.setOnClickListener(view -> {
-                memoColor = 0;
-                color_picker.getBackground().setColorFilter(Color.parseColor("#737373"), PorterDuff.Mode.SRC_ATOP);
-                window.dismiss();
-            });
-
-            layout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    //Close the window when clicked
-                    window.dismiss();
-                    return true;
-                }
-            });
-
-        } catch (Exception e) {
+            val color1: CardView
+            val color3: CardView
+            val color4: CardView
+            val color5: CardView
+            val color6: CardView
+            val btnDefault: Button
+            hideSoftKeyboard(this@CreateMemoActivity)
+            val inflater = this@CreateMemoActivity.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val layout = inflater.inflate(R.layout.color_picker_popup_window, null)
+            val width = LinearLayout.LayoutParams.MATCH_PARENT
+            val height = LinearLayout.LayoutParams.MATCH_PARENT
+            window = PopupWindow(layout, width, height, true)
+            window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window.isOutsideTouchable = true
+            window.showAtLocation(layout, Gravity.CENTER, 0, 0)
+            color1 = layout.findViewById(R.id.memo_color_1)
+            color3 = layout.findViewById(R.id.memo_color_3)
+            color4 = layout.findViewById(R.id.memo_color_4)
+            color5 = layout.findViewById(R.id.memo_color_5)
+            color6 = layout.findViewById(R.id.memo_color_6)
+            btnDefault = layout.findViewById(R.id.btn_default)
+            color1.setOnClickListener {
+                memoColor = 1
+                colorPicker.background.setColorFilter(Color.parseColor("#D32727"), PorterDuff.Mode.SRC_ATOP)
+                window.dismiss()
+            }
+            color3.setOnClickListener {
+                memoColor = 3
+                colorPicker.background.setColorFilter(Color.parseColor("#EF8E0B"), PorterDuff.Mode.SRC_ATOP)
+                window.dismiss()
+            }
+            color4.setOnClickListener {
+                memoColor = 4
+                colorPicker.background.setColorFilter(Color.parseColor("#03A8C4"), PorterDuff.Mode.SRC_ATOP)
+                window.dismiss()
+            }
+            color5.setOnClickListener {
+                memoColor = 5
+                colorPicker.background.setColorFilter(Color.parseColor("#516F55"), PorterDuff.Mode.SRC_ATOP)
+                window.dismiss()
+            }
+            color6.setOnClickListener {
+                memoColor = 6
+                colorPicker.background.setColorFilter(Color.parseColor("#842c72"), PorterDuff.Mode.SRC_ATOP)
+                window.dismiss()
+            }
+            btnDefault.setOnClickListener {
+                memoColor = 0
+                colorPicker.background.setColorFilter(Color.parseColor("#737373"), PorterDuff.Mode.SRC_ATOP)
+                window.dismiss()
+            }
+            layout.setOnTouchListener { view, motionEvent -> //Close the window when clicked
+                window!!.dismiss()
+                true
+            }
+        } catch (e: Exception) {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
-
-            memoBookId = data.getIntExtra(Constants.MEMO_BOOK_ID, -1);
+            memoBookId = data.getIntExtra(Constants.MEMO_BOOK_ID, -1)
             if (memoBookId != -1) {
-                memoBook = DbHelper.findMemoBook(memoBookId, context);
-                memo_book_btn.setText(memoBook.getName());
+                memoBook = findMemoBook(memoBookId, context)
+                memoBookBtn.text = memoBook!!.name
             }
         }
+    }
+
+    companion object {
+        const val DATE_FORMAT = "MMM dd, yyyy"
     }
 }

@@ -32,7 +32,7 @@ class StarredMemoAdapter(var data: MutableList<Memo>,
 
     override fun onBindViewHolder(holder: MemoHolder, position: Int) {
         if (position == data.size) {
-            holder.starredMemosButton.setOnClickListener { v: View? ->
+            holder.starredMemosButton?.setOnClickListener { v: View? ->
                 val intent = Intent(context, CreateMemoActivity::class.java)
                 intent.putExtra(Constants.MEMO_IMPORTANCE, true)
                 context.startActivity(intent)
@@ -90,7 +90,7 @@ class StarredMemoAdapter(var data: MutableList<Memo>,
         var memoTitle: TextView? = itemView.findViewById(R.id.t_memo_title)
         var memoContent: TextView? = itemView.findViewById(R.id.t_memo_content)
         var memoMain: CardView? = itemView.findViewById(R.id.memo_main)
-        var starredMemosButton: CardView = itemView.findViewById(R.id.starred_memos_button)
+        var starredMemosButton: CardView? = itemView.findViewById(R.id.starred_memos_button)
         var blank: View? = itemView.findViewById(R.id.blank)
 
     }

@@ -1,149 +1,123 @@
-package com.jkuhail.android.memokeep.activities;
+package com.jkuhail.android.memokeep.activities
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.jkuhail.android.memokeep.R
+import com.jkuhail.android.memokeep.adapters.ChooseMemoBookAdapter
+import com.jkuhail.android.memokeep.helpers.Constants
+import com.jkuhail.android.memokeep.helpers.DbHelper.incrementMemoBookId
+import com.jkuhail.android.memokeep.helpers.DbHelper.retrieveMemoBooks
+import com.jkuhail.android.memokeep.helpers.DbHelper.saveMemoBook
+import com.jkuhail.android.memokeep.helpers.Helper.getCurrentDate
+import com.jkuhail.android.memokeep.models.MemoBook
+import java.util.*
+import kotlin.collections.ArrayList
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-
-import com.jkuhail.android.memokeep.R;
-import com.jkuhail.android.memokeep.adapters.ChooseMemoBookAdapter;
-import com.jkuhail.android.memokeep.helpers.Constants;
-import com.jkuhail.android.memokeep.helpers.DbHelper;
-import com.jkuhail.android.memokeep.helpers.Helper;
-import com.jkuhail.android.memokeep.models.MemoBook;
-
-import java.util.ArrayList;
-import java.util.List;
+class ChooseMemoBookActivity : AppCompatActivity() {
+    var appBar: Toolbar? = null
+    private lateinit var newNoteBook: Button
+    private lateinit var backButton: Button
+    private lateinit var recyclerView: RecyclerView
+    private var adapter: ChooseMemoBookAdapter? = null
+    private var window: PopupWindow? = null
+    private var data: ArrayList<MemoBook> = ArrayList()
+    lateinit var context: Context
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_choose_memo_book)
+        appBar = findViewById(R.id.app_bar)
+        setSupportActionBar(appBar)
+        context = applicationContext
+        newNoteBook = findViewById(R.id.new_notebook_fragment2)
+        backButton = findViewById(R.id.back_to_memo_btn)
+        recyclerView = findViewById(R.id.recyclerView2)
+        data = retrieveMemoBooks(context)
+        adapter = ChooseMemoBookAdapter(data, this)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
 
 
-public class ChooseMemoBookActivity extends AppCompatActivity {
-    Toolbar appBar;
-    Button new_notebook_fragment , back_to_memo_btn;
-    RecyclerView recyclerView;
-    ChooseMemoBookAdapter adapter;
-    private PopupWindow window;
-    List<MemoBook> data = new ArrayList<>();
-    Context context;
-
-    public static final String DATE_FORMAT = "MMM dd, yyyy";
-    
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_memo_book);
-        appBar = findViewById(R.id.app_bar);
-        setSupportActionBar(appBar);
-
-        context = getApplicationContext();
-
-        new_notebook_fragment = findViewById(R.id.new_notebook_fragment2);
-        back_to_memo_btn = findViewById(R.id.back_to_memo_btn);
-        recyclerView = findViewById(R.id.recyclerView2);
-
-        data = DbHelper.retrieveMemoBooks(context);
-        adapter = new ChooseMemoBookAdapter(data , this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-
-//        memoBooks = MemoBook.listAll(MemoBook.class);
-
-        new_notebook_fragment.setOnClickListener(view -> {
+        newNoteBook.setOnClickListener {
             //this is how we call a class activity in a fragment ;)
-            ShowSecondPopupWindow();
-
-        });
-
-        back_to_memo_btn.setOnClickListener(view -> finish());
-
+            showSecondPopupWindow()
+        }
+        backButton.setOnClickListener { finish() }
     }
 
-    public void ShowSecondPopupWindow(){
+    private fun showSecondPopupWindow() {
         try {
-            final Button ok;
-            final EditText ed_new_notebook;
-            final TextView error_message;
-
-            LayoutInflater inflater = (LayoutInflater) ChooseMemoBookActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.new_memo_book_popup, null);
-
-            int width = LinearLayout.LayoutParams.MATCH_PARENT;
-            int height = LinearLayout.LayoutParams.MATCH_PARENT;
-
-            window = new PopupWindow(layout, width, height, true);
-
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            window.setOutsideTouchable(true);
-            window.showAtLocation(layout, Gravity.CENTER, 0, 0);
+            val ok: Button
+            val edNewNotebook: EditText
+            val errorMessage: TextView
+            val inflater = this@ChooseMemoBookActivity.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val layout = inflater.inflate(R.layout.new_memo_book_popup, null)
+            val width = LinearLayout.LayoutParams.MATCH_PARENT
+            val height = LinearLayout.LayoutParams.MATCH_PARENT
+            window = PopupWindow(layout, width, height, true)
+            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window!!.isOutsideTouchable = true
+            window!!.showAtLocation(layout, Gravity.CENTER, 0, 0)
             //  window.showAtLocation(layout, 17, 100, 100);
-
-            ed_new_notebook = layout.findViewById(R.id.ed_new_notebook);
-            ok = layout.findViewById(R.id.ok);
-            error_message = layout.findViewById(R.id.error_message);
-
-            ok.setOnClickListener(v -> {
-                String memobook_name = ed_new_notebook.getText().toString().trim();
-
-                    if (ed_new_notebook.length() == 0) {
-                        error_message.setVisibility(View.VISIBLE);
-                        error_message.setText("Please enter a name!");
-                        ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                    }else if(isDuplicated(memobook_name)){
-                        error_message.setVisibility(View.VISIBLE);
-                        error_message.setText("This Memo book is already exists!");
-                        ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
-                    } else {
-                        //TODO: handle the date
-                        String date = Helper.getCurrentDate(DATE_FORMAT);
-                        int id = DbHelper.incrementMemoBookId(context);
-                        MemoBook memoBook = new MemoBook(id, memobook_name, date);
-                        DbHelper.saveMemoBook( memoBook, context);
-                        Intent intent = new Intent();
-                        intent.putExtra(Constants.MEMO_BOOK_ID, id);
-                        setResult(Activity.RESULT_OK, intent);
-                        window.dismiss();
-                        finish();
-                    }
-                });
-            layout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    //Close the window when clicked
-                    window.dismiss();
-                    return true;
+            edNewNotebook = layout.findViewById(R.id.ed_new_notebook)
+            ok = layout.findViewById(R.id.ok)
+            errorMessage = layout.findViewById(R.id.error_message)
+            ok.setOnClickListener {
+                val memoBookName = edNewNotebook.text.toString().trim { it <= ' ' }
+                if (edNewNotebook.length() == 0) {
+                    errorMessage.visibility = View.VISIBLE
+                    errorMessage.text = "Please enter a name!"
+                    edNewNotebook.setBackgroundResource(R.drawable.error_edit_text_shape)
+                } else if (isDuplicated(memoBookName)) {
+                    errorMessage.visibility = View.VISIBLE
+                    errorMessage.text = "This Memo book is already exists!"
+                    edNewNotebook.setBackgroundResource(R.drawable.error_edit_text_shape)
+                } else {
+                    //TODO: handle the date
+                    val date = getCurrentDate(DATE_FORMAT)
+                    val id = incrementMemoBookId(context)
+                    val memoBook = MemoBook(id, memoBookName, date)
+                    saveMemoBook(memoBook, context)
+                    val intent = Intent()
+                    intent.putExtra(Constants.MEMO_BOOK_ID, id)
+                    setResult(RESULT_OK, intent)
+                    window!!.dismiss()
+                    finish()
                 }
-            });
-
-        }catch (Exception e){}
-
+            }
+            layout.setOnTouchListener { view, motionEvent -> //Close the window when clicked
+                window!!.dismiss()
+                true
+            }
+        } catch (e: Exception) {
+        }
     }
 
-    public final boolean isDuplicated(String word){
-        ArrayList<MemoBook> memoBooks = DbHelper.retrieveMemoBooks(context);
-        String memoBookName;
-        if(!memoBooks.isEmpty()){
-            for (MemoBook memoBook : memoBooks) {
-                memoBookName = memoBook.getName();
-                if(word.equals(memoBookName)){
-                    return true;
+    private fun isDuplicated(word: String): Boolean {
+        val memoBooks = retrieveMemoBooks(context)
+        var memoBookName: String
+        if (memoBooks.isNotEmpty()) {
+            for (memoBook in memoBooks) {
+                memoBookName = memoBook.name.toString()
+                if (word == memoBookName) {
+                    return true
                 }
             }
         }
-        return false;
+        return false
+    }
+
+    companion object {
+        const val DATE_FORMAT = "MMM dd, yyyy"
     }
 }

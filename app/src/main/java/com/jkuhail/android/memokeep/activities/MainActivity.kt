@@ -1,196 +1,142 @@
-package com.jkuhail.android.memokeep.activities;
+package com.jkuhail.android.memokeep.activities
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.*
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.jkuhail.android.memokeep.R
+import com.jkuhail.android.memokeep.fragments.MemoBooksFragment
+import com.jkuhail.android.memokeep.fragments.MemosFragment
+import com.jkuhail.android.memokeep.helpers.DbHelper.incrementMemoBookId
+import com.jkuhail.android.memokeep.helpers.DbHelper.retrieveMemoBooks
+import com.jkuhail.android.memokeep.helpers.DbHelper.saveMemoBook
+import com.jkuhail.android.memokeep.helpers.Helper.getCurrentDate
+import com.jkuhail.android.memokeep.models.MemoBook
+import com.luseen.spacenavigation.SpaceItem
+import com.luseen.spacenavigation.SpaceNavigationView
+import com.luseen.spacenavigation.SpaceOnClickListener
 
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import com.jkuhail.android.memokeep.fragments.MemoBooksFragment;
-import com.jkuhail.android.memokeep.fragments.MemosFragment;
-import com.jkuhail.android.memokeep.R;
-import com.jkuhail.android.memokeep.helpers.DbHelper;
-import com.jkuhail.android.memokeep.helpers.Helper;
-import com.jkuhail.android.memokeep.models.MemoBook;
-import com.luseen.spacenavigation.SpaceItem;
-import com.luseen.spacenavigation.SpaceNavigationView;
-import com.luseen.spacenavigation.SpaceOnClickListener;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-
-
-public class MainActivity extends AppCompatActivity {
-
-    Toolbar appBar;
-    SpaceNavigationView navigationView;
-    private PopupWindow window;
-    public static final String DATE_FORMAT = "MMM dd, yyyy";
-    Context context;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        appBar = findViewById(R.id.app_bar);
-        setSupportActionBar(appBar);
-
-        context = getApplicationContext();
-
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemosFragment()).commit();
-        navigationView = findViewById(R.id.space);
-        navigationView.initWithSaveInstanceState(savedInstanceState);
-        navigationView.addSpaceItem(new SpaceItem("Memos", R.drawable.ic_note));
-        navigationView.addSpaceItem(new SpaceItem("Memo books", R.drawable.ic_notebook));
-
-        navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
-            @Override
-            public void onCentreButtonClick() {
-                Intent intent = new Intent(context, CreateMemoActivity.class);
-                startActivity(intent);
+class MainActivity : AppCompatActivity() {
+    var appBar: Toolbar? = null
+    private lateinit var navigationView: SpaceNavigationView
+    private var window: PopupWindow? = null
+    var context: Context? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        appBar = findViewById(R.id.app_bar)
+        setSupportActionBar(appBar)
+        context = applicationContext
+        supportFragmentManager.beginTransaction().replace(R.id.mainContainer, MemosFragment()).commit()
+        navigationView = findViewById(R.id.space)
+        navigationView.initWithSaveInstanceState(savedInstanceState)
+        navigationView.addSpaceItem(SpaceItem("Memos", R.drawable.ic_note))
+        navigationView.addSpaceItem(SpaceItem("Memo books", R.drawable.ic_notebook))
+        navigationView.setSpaceOnClickListener(object : SpaceOnClickListener {
+            override fun onCentreButtonClick() {
+                val intent = Intent(context, CreateMemoActivity::class.java)
+                startActivity(intent)
             }
 
-            @Override
-            public void onItemClick(int itemIndex, String itemName) {
-                switch (itemIndex) {
-                    case 0:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemosFragment()).commit();
-                        break;
-                    case 1:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemoBooksFragment()).commit();
-                        break;
+            override fun onItemClick(itemIndex: Int, itemName: String) {
+                when (itemIndex) {
+                    0 -> supportFragmentManager.beginTransaction().replace(R.id.mainContainer, MemosFragment()).commit()
+                    1 -> supportFragmentManager.beginTransaction().replace(R.id.mainContainer, MemoBooksFragment()).commit()
                 }
             }
 
-            @Override
-            public void onItemReselected(int itemIndex, String itemName) {
-                switch (itemIndex) {
-                    case 0:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemosFragment()).commit();
-                        break;
-                    case 1:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainContainer, new MemoBooksFragment()).commit();
-                        break;
+            override fun onItemReselected(itemIndex: Int, itemName: String) {
+                when (itemIndex) {
+                    0 -> supportFragmentManager.beginTransaction().replace(R.id.mainContainer, MemosFragment()).commit()
+                    1 -> supportFragmentManager.beginTransaction().replace(R.id.mainContainer, MemoBooksFragment()).commit()
                 }
             }
-        });
-
+        })
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.side_menu, menu);
-        return true;
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.side_menu, menu)
+        return true
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
         if (id == R.id.archive) {
-            Intent intent = new Intent(context, ArchiveActivity.class);
-            startActivity(intent);
+            val intent = Intent(context, ArchiveActivity::class.java)
+            startActivity(intent)
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-
-    public void ShowSecondPopupWindow() {
+    fun showSecondPopupWindow() {
         try {
-            final Button ok;
-            final EditText ed_new_notebook;
-            final TextView error_message;
-
-            LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.new_memo_book_popup, null);
-
-            int width = LinearLayout.LayoutParams.MATCH_PARENT;
-            int height = LinearLayout.LayoutParams.MATCH_PARENT;
-
-            window = new PopupWindow(layout, width, height, true);
-
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            window.setOutsideTouchable(true);
-            window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-
-            ed_new_notebook = layout.findViewById(R.id.ed_new_notebook);
-            ok = layout.findViewById(R.id.ok);
-            error_message = layout.findViewById(R.id.error_message);
-            ok.setOnClickListener(v -> {
-                String memo_book_name = ed_new_notebook.getText().toString().trim();
-
-                if (ed_new_notebook.length() == 0) {
-                    error_message.setVisibility(View.VISIBLE);
-                    error_message.setText("Please enter a name!");
-                    ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
+            val ok: Button
+            val edNewNotebook: EditText
+            val errorMessage: TextView
+            val inflater = this@MainActivity.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val layout = inflater.inflate(R.layout.new_memo_book_popup, null)
+            val width = LinearLayout.LayoutParams.MATCH_PARENT
+            val height = LinearLayout.LayoutParams.MATCH_PARENT
+            window = PopupWindow(layout, width, height, true)
+            window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window!!.isOutsideTouchable = true
+            window!!.showAtLocation(layout, Gravity.CENTER, 0, 0)
+            edNewNotebook = layout.findViewById(R.id.ed_new_notebook)
+            ok = layout.findViewById(R.id.ok)
+            errorMessage = layout.findViewById(R.id.error_message)
+            ok.setOnClickListener { v: View? ->
+                val memo_book_name = edNewNotebook.text.toString().trim { it <= ' ' }
+                if (edNewNotebook.length() == 0) {
+                    errorMessage.visibility = View.VISIBLE
+                    errorMessage.text = "Please enter a name!"
+                    edNewNotebook.setBackgroundResource(R.drawable.error_edit_text_shape)
                 } else if (isDuplicated(memo_book_name)) {
-                    error_message.setVisibility(View.VISIBLE);
-                    error_message.setText("This Memo book is already exists!");
-                    ed_new_notebook.setBackgroundResource(R.drawable.error_edit_text_shape);
+                    errorMessage.visibility = View.VISIBLE
+                    errorMessage.text = "This Memo book is already exists!"
+                    edNewNotebook.setBackgroundResource(R.drawable.error_edit_text_shape)
                 } else {
-                    String date = Helper.getCurrentDate(DATE_FORMAT);
-                    int id = DbHelper.incrementMemoBookId(context);
-                    MemoBook memoBook = new MemoBook(id, memo_book_name, date);
-                    DbHelper.saveMemoBook(memoBook, context);
-                    window.dismiss();
+                    val date = getCurrentDate(DATE_FORMAT)
+                    val id = incrementMemoBookId(context!!)
+                    val memoBook = MemoBook(id, memo_book_name, date)
+                    saveMemoBook(memoBook, context!!)
+                    window!!.dismiss()
                 }
-            });
-            layout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    //Close the window when clicked
-                    window.dismiss();
-                    return true;
-                }
-            });
-
-        } catch (Exception e) {
+            }
+            layout.setOnTouchListener { view, motionEvent -> //Close the window when clicked
+                window!!.dismiss()
+                true
+            }
+        } catch (e: Exception) {
         }
-
     }
 
-
-    @Override
-    public void onBackPressed() {
-        Intent a = new Intent(Intent.ACTION_MAIN);
-        a.addCategory(Intent.CATEGORY_HOME);
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(a);
+    override fun onBackPressed() {
+        val a = Intent(Intent.ACTION_MAIN)
+        a.addCategory(Intent.CATEGORY_HOME)
+        a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(a)
     }
 
-    public final boolean isDuplicated(String word) {
-        ArrayList<MemoBook> memoBooks = DbHelper.retrieveMemoBooks(context);
-        String memoBookName;
-        if (!memoBooks.isEmpty()) {
-            for (MemoBook memoBook : memoBooks) {
-                memoBookName = memoBook.getName();
-                if (word.equals(memoBookName)) {
-                    return true;
+    private fun isDuplicated(word: String): Boolean {
+        val memoBooks = retrieveMemoBooks(context!!)
+        var memoBookName: String
+        if (memoBooks.isNotEmpty()) {
+            for (memoBook in memoBooks) {
+                memoBookName = memoBook.name.toString()
+                if (word == memoBookName) {
+                    return true
                 }
             }
         }
-        return false;
+        return false
+    }
+
+    companion object {
+        const val DATE_FORMAT = "MMM dd, yyyy"
     }
 }

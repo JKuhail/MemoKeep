@@ -1,16 +1,13 @@
-package com.jkuhail.android.memokeep.activities;
+package com.jkuhail.android.memokeep.activities
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.jkuhail.android.memokeep.R
 
-import android.os.Bundle;
+class ArchiveActivity : AppCompatActivity() {
 
-import com.jkuhail.android.memokeep.R;
-
-public class ArchiveActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_archive);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_archive)
     }
 }

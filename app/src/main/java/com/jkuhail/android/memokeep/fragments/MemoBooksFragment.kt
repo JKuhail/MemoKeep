@@ -13,7 +13,6 @@ import com.jkuhail.android.memokeep.activities.MainActivity
 import com.jkuhail.android.memokeep.adapters.MemoBookAdapter
 import com.jkuhail.android.memokeep.helpers.DbHelper.retrieveMemoBooks
 import com.jkuhail.android.memokeep.models.MemoBook
-import java.util.*
 import kotlin.collections.ArrayList
 
 class MemoBooksFragment : Fragment() {
@@ -37,7 +36,7 @@ class MemoBooksFragment : Fragment() {
 
         newNotebook = root.findViewById(R.id.new_notebook_fragment)
         newNotebook.setOnClickListener { //this is how we call a class activity in a fragment ;)
-            (activity as MainActivity?)!!.ShowSecondPopupWindow()
+            (activity as MainActivity?)!!.showSecondPopupWindow()
         }
         return root
     }
